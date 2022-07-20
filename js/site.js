@@ -49,12 +49,7 @@ $("#use_my_location").click(function (e) {
                 lon: position.coords.longitude
             }
 
-            zoom_to_point(point, findme_map, findme_marker);
-
-            $('#success').html(i18n.t('messages.success', { escapeInterpolation: false }));
-            $('#success').show();
-            window.scrollTo(0, $('#address').position().top - 30);
-            $('.step-2 a').attr('href', '#details');
+            addressLookupFinished(point);
         }, function (error) {
             $("#couldnt-find").show();
         });
@@ -69,28 +64,34 @@ $("#find").submit(function(e) {
     $("#invalid-location").hide();
     $("#success").hide();
     var address_to_find = $("#address").val();
-    if (address_to_find.length === 0) return;
+
+    if (address_to_find.length === 0) return;    
     var qwarg = {
         format: 'json',
         q: address_to_find
     };
+    
     var url = "https://nominatim.openstreetmap.org/search?" + $.param(qwarg);
     $("#findme h4").text(i18n.t('messages.loadingText'));
     $("#findme").addClass("loading");
     $.getJSON(url, function(data) {
         if (data.length > 0) {
-            zoom_to_point(data[0], findme_map, findme_marker);
-
-            $('#success').html(i18n.t('messages.success', { escapeInterpolation: false }));
-            $('#success').show();
-            window.scrollTo(0, $('#address').position().top - 30);
-            $('.step-2 a').attr('href', '#details');
+            addressLookupFinished(data[0]);
         } else {
             $("#couldnt-find").show();
         }
         $("#findme").removeClass("loading");
     });
 });
+
+function addressLookupFinished(pointData) {
+    zoom_to_point(pointData, findme_map, findme_marker);
+
+    $('#success').html(i18n.t('messages.success', { escapeInterpolation: false }));
+    $('#success').show();
+    window.scrollTo(0, $('#address').position().top - 30);
+    $('.step-2 a').attr('href', '#details');
+}
 
 $(window).on('hashchange', function() {
     if (location.hash == '#details') {
@@ -160,6 +161,7 @@ $("#collect-data-done").click(function() {
         }
     );
 });
+
 
 function clearFields() {
     $("#name").val('');
