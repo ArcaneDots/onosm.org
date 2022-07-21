@@ -39,7 +39,7 @@ function zoom_to_point(chosen_place, map, marker) {
     map.setView(chosen_place, 18, {animate: true});
 }
 
-$("#use_my_location").click(function (e) {
+function useMyLocation() {
     $("#couldnt-find").hide();
     $("#success").hide();
     if ("geolocation" in navigator) {
@@ -56,14 +56,38 @@ $("#use_my_location").click(function (e) {
     } else {
         $("#couldnt-find").show();
     }
-});
+};
 
 $("#find").submit(function(e) {
     e.preventDefault();
     $("#couldnt-find").hide();
     $("#invalid-location").hide();
     $("#success").hide();
-    var address_to_find = $("#address").val();
+
+    var userAddress = $("#address").val()
+    var userCity = $("#city").val()
+    var userState = $("#state").val()
+    var userCountryCode = $("#country_code").val()
+
+    if (userAddress.length == 0) {
+        $("#invalid-location").show();
+        $("#error-address").show();
+        $("#error-address").text("Error!");
+    }
+
+    if (userCity.length == 0) {
+        $("#invalid-location").show();
+        $("#error-city").show();
+    }
+
+    if (userState.length == 0) {
+        $("#invalid-location").show();
+        $("#error-state").show();
+    }
+
+
+
+    var address_to_find = userAddress + ' ' + userCity + ' ' + userState + ' ' + userCountryCode;
 
     if (address_to_find.length === 0) return;    
     var qwarg = {
@@ -72,7 +96,8 @@ $("#find").submit(function(e) {
     };
     
     var url = "https://nominatim.openstreetmap.org/search?" + $.param(qwarg);
-    $("#findme h4").text(i18n.t('messages.loadingText'));
+    //$("#loading-banner").val(i18n.t('messages.loadingText'));
+    $("#findme").addClass("disabled");
     $("#findme").addClass("loading");
     $.getJSON(url, function(data) {
         if (data.length > 0) {
@@ -80,8 +105,9 @@ $("#find").submit(function(e) {
         } else {
             $("#couldnt-find").show();
         }
-        $("#findme").removeClass("loading");
     });
+    $("#findme").removeClass("loading");
+    $("#findme").removeClass("disabled");
 });
 
 function addressLookupFinished(pointData) {

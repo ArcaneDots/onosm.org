@@ -8,6 +8,8 @@
         <link rel='stylesheet' type='text/css' href='css/site.css' />
         <link rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css' />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/leaflet.css" />
+        <link rel="stylesheet" href="css/countrySelect.css">
+        <link rel="stylesheet" href="css/validate.css">
         <!--[if lte IE 8]>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/leaflet.ie.css" />
         <![endif]-->
@@ -55,10 +57,22 @@
                 <div class='col12'>
                     <div class='pad1'>
                         <form id='find'>
-                            <input class='col8' id='address' placeholder='' data-i18n="[placeholder]step1.addr"/>
-                            <button class='col4' id='findme' data-i18n="step1.button"></button>
-                            <br />
-                            <a id="use_my_location" data-i18n="step1.use_location" href="#" onclick="return false">use my current location</a>.
+                            <fieldset>
+                            <legend>Enter address</legend>
+                            <div id="find-address-errors">
+                            </div>                           
+                            <label for="address">Address<span class="reqField"> (required) </span></label>
+                            <input id='address' required autocomplete="street-address" placeholder='' data-i18n="[placeholder]step1.addr"/>                          
+                            <label for="city">City<span class="reqField"> (required) </span></label>
+                            <input id='city' required autocomplete="address-level2" required placeholder='' data-i18n="[placeholder]step1.addr"/>                          
+                            <label for="state">State<span class="reqField"> (required) </span></label>
+                            <input id='state' required autocomplete="address-level1" required placeholder='' data-i18n="[placeholder]step1.addr"/>                         
+                            <input type="hidden" id="country_code" />
+                            <label for="country-code">Country<span class="reqField"> (required) </span></label>
+                            <input type="text" id="country" autocomplete="country" required placeholder='' data-i18n="[placeholder]step1.addr"/>   
+                            <button id='findme' data-i18n="step1.button"></button>
+                        </fieldset>
+                            <button onclick="useMyLocation()" data-i18n="step1.use_location" >use my current location</button>.                            
                         </form>
                     </div>
                 </div>
@@ -121,5 +135,9 @@
         </div>
         <script src="js/i18n.js"></script>
         <script src="js/site.js"></script>
+        <script src="js/countrySelect.min.js"></script>
+        <script>
+          $("#country").countrySelect();
+        </script>
     </body>
 </html>
