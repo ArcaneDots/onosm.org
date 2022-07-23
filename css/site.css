@@ -93,3 +93,14 @@ footer {
         text-align: center;
     }
 }
+
+fieldset {
+    margin: 1rem 0.5rem;  
+    border: 2px groove;
+    padding-left: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* fieldset * {
+    margin-left: .2rem;
+} */
