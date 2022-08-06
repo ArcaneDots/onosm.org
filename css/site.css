@@ -101,6 +101,14 @@ fieldset {
     padding-bottom: 0.5rem;
 }
 
+.start-hidden {
+    display: none;
+}
+
 /* fieldset * {
     margin-left: .2rem;
 } */
+
+.outline-errors{
+    border: red 2px dashed;
+}

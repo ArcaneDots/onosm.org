@@ -52,37 +52,34 @@
 
             <div class='col12' id='address-step'>
                 <div class='center pad2'>
-                    <span id='instructions' data-i18n="step1.desc"></span>
+                    <span id='instructions' data-i18n="step1.desc"></span>                    
                 </div>
                 <div class='col12'>
                     <div class='pad1'>
-                        <form id='find'>
+                        <form action="" id='find'>
                             <fieldset>
                             <legend>Enter address</legend>
-                            <div id="find-address-errors">
+                            <div>
+                            <p id="couldnt-find" class="start-hidden outline-errors" data-i18n="[html]step1.fail"></p>                    
+                            <p id="invalid-location" class="start-hidden outline-errors" data-i18n="[html]step1.invalid-location"></p>
                             </div>                           
-                            <label for="address">Address<span class="reqField"> (required) </span></label>
-                            <input id='address' required autocomplete="street-address" placeholder='' data-i18n="[placeholder]step1.addr"/>                          
+                            <label for="address">Address</label>
+                            <input id='address' autocomplete="street-address" placeholder='' data-i18n="[placeholder]step1.addr"/>                          
                             <label for="city">City<span class="reqField"> (required) </span></label>
                             <input id='city' required autocomplete="address-level2" placeholder='' data-i18n="[placeholder]step1.addr"/>                          
                             <label for="state">State<span class="reqField"> (required) </span></label>
                             <input id='state' required autocomplete="address-level1" placeholder='' data-i18n="[placeholder]step1.addr"/>                         
                             <input type="hidden" id="country_code" />
-                            <label for="country-code">Country</label>
+                            <label for="country-code">Country<span class="reqField"> (required) </span></label>
                             <input type="text" id="country" autocomplete="country" placeholder='' data-i18n="[placeholder]step1.addr"/>   
                             <button id='findme' data-i18n="step1.button"></button>
-                        </fieldset>
-                            <button onclick="useMyLocation()" data-i18n="step1.use_location" >use my current location</button>.                            
+                        </fieldset>                         
                         </form>
+                            <button onclick="useMyLocation()" data-i18n="step1.use_location" >use my current location</button>.   
                     </div>
                 </div>
 
-                <div class='center pad2'>
-                    <p id="couldnt-find" style='display: none;' data-i18n="[html]step1.fail"></p>
-                </div>
-                <div class='center pad2'>
-                    <p id="invalid-location" style='display: none;' data-i18n="[html]step1.invalid-location"></p>
-                </div>
+                
                 <div class='col12'>
                     <div class='col12' id='findme-map'></div>
                     <p id="success" class="center" style='display: none; margin-bottom: 500px;'></p>
