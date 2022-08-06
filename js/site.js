@@ -196,7 +196,7 @@ function nominatim_callback(data) {
     }
     $("#findme").removeClass("loading");
     $("#findme").removeClass("disabled");
-});
+};
 
 function addressLookupFinished(pointData) {
     zoom_to_point(pointData, findme_map, findme_marker);
