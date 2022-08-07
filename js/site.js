@@ -139,18 +139,18 @@ function nominatim_callback(data) {
 
 
         // found address
-        var pointRef = chosen_place.address.house_number
-        var way = chosen_place.address.road
+        var pointRef = chosen_place.address.house_number?.trim()
+        var way = chosen_place.address.road?.trim()
 
         var streetAddress = []
 
         // building or number may need to be added
-        if (pointRef !== undefined) {
+        if (pointRef.length > 0) {
             streetAddress.push(pointRef)
         }
         
         // road or other way may need to be added 
-        if (way !== undefined) {
+        if (way.length > 0) {
             streetAddress.push(way)
         }
 
@@ -163,21 +163,25 @@ function nominatim_callback(data) {
 
         var state = chosen_place.address.state
         var municipality = chosen_place.address.village || chosen_place.address.town || chosen_place.address.city
-        //var postcode = chosen_place.address.postcode
+        var postcode = chosen_place.address.postcode
         var country = chosen_place.address.country
 
-        // final address
-        $("#address").val(streetAddress.join(' '));
+        // inital search
+        $('#address').val(streetAddress.join(' '));
         $('#city').val(municipality);
         $('#state').val(state);
         $('#country').val(country);
-
-        // $('#addressalt').val(chosen_place.address.road);
-        // $('#hnumberalt').val(chosen_place.address.house_number);
-        // $('#postcode').val(postcode);
+        
+        // final address
+        $('#hnumber-alt').val(pointRef);
+        $('#address-alt').val(way);
+        $('#city-alt').val(municipality);
+        $('#state-alt').val(state);
+        $('#country-alt').val(country);
+        $('#postcode').val(postcode);
         
         // returned valid address (could be missing street address)
-        $("#find").removeClass("outline-errors");
+        $("#find").removeClass("outline-errors");            
             
 
         $('#step2').removeClass("disabled");
