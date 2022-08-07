@@ -72,28 +72,14 @@ $("#find").submit(function(e) {
     if (userAddress.length > 0) {
         address_to_find.push(userAddress)
     }
-    // if (userAddress.length == 0) {
-    //     $("#invalid-location").show();
-    //     $("#error-address").show();
-    //     $("#error-address").text("Error!");
-    // }
-
+ 
     if (userCity.length > 0) {
         address_to_find.push(userCity)
     }
 
-    // if (userCity.length == 0) {
-    //     $("#invalid-location").show();
-    //     $("#error-city").show();
-    // }
-
     if (userState.length > 0) {
         address_to_find.push(userState)
     }
-    // if (userState.length == 0) {
-    //     $("#invalid-location").show();
-    //     $("#error-state").show();
-    // }
 
     if (address_to_find.length === 0) return;
 
