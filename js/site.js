@@ -210,7 +210,7 @@ $(window).on('hashchange', function () {
 // Disables the input if delivery is not checked
 $('#delivery-check').prop('indeterminate', true);
 $(function () { deliveryCheck(); $("#delivery-check").click(deliveryCheck); });
-function deliveryCheck() { if (this.checked) { enableDelivery(); } else { disableDelivery(); } }
+function deliveryCheck() { this.checked ? enableDelivery(): disableDelivery(); }
 
 function disableDelivery() { $("#delivery").attr("disabled", true); $("#delivery_description").attr("disabled", true); $("#label-delivery-check").html(i18n.t('step2.no')); }
 function enableDelivery() { $("#delivery").removeAttr("disabled"); $("#delivery_description").removeAttr("disabled"); $("#label-delivery-check").html(i18n.t('step2.yes')); }
