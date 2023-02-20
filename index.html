@@ -23,8 +23,8 @@
   <link rel="stylesheet" href="css/L.Control.Locate.css" />
 
   <!-- BOOTSTRAP CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
   <!-- TWEMOJI Amazing -->
   <link rel="stylesheet" href="css/twemoji.css" />
@@ -187,7 +187,8 @@
           </div>
         </div>
 
-        <hr>
+        <hr class="my-3">
+
         <!-- name and number -->
         <div class="row mt-3">
           <div class="form-group col">
@@ -292,31 +293,41 @@
 
         <hr class="my-3">
 
-        <!-- delivery -->
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text bg-primary">
-              <div class="custom-control custom-checkbox text-white">
-                <input type="checkbox" class="custom-control-input" id="delivery-check" name="delivery-check">
-                <label for="delivery-check" id="label-delivery-check" class="custom-control-label mb-0 ml-2"
-                  data-i18n="step2.no"></label>
-                <button id="deliveryToggle" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#deliverySection"
-                  aria-controls="deliverySection" aria-expanded="false" data-i18n="step2.deliverydesc">
-                  delivery
-                </button>
-              </div>
-            </div>
+        <!-- delivery toogle-->
+        <div class="form-row">
+          <div class="form-group col-sm-2">
+            <label id="delivery-label" data-i18n="step2.deliverydesc">Takeaway Label</label>
           </div>
-          
+          <div class="form-group col-sm-4" role="radiogroup" aria-labelledby="delivery-label">
+            <fieldset>
+        
+              <input type="radio" name="deliveryState" id="deliveryState-yes" aria-disabled="true">
+              <label for="deliveryState-yes" data-i18n="step2.yes">yes</label>
+        
+              <input type="radio" name="deliveryState" id="deliveryState-no">
+              <label for="deliveryState-no" data-i18n="step2.no">no</label>
+        
+              <input type="radio" name="deliveryState" id="deliveryState-only" checked>
+              <label for="deliveryState-only" data-i18n="step2.only">only</label>
+            </fieldset>
+          </div>
+          <div class="form-group col-sm-1">
+            <button id="deliveryToggle" class="btn btn-primary" type="button" data-toggle="collapse"
+              data-target="#deliverySection" aria-controls="deliverySection" aria-expanded="false"
+              data-i18n="step2.expand_section">
+              delivery
+            </button>
+          </div>
         </div>
-
+        
+        <!-- delivery section -->
         <div class="collapse " id="deliverySection">
           <div class="row">
             <!-- delivery -->
             <div class="form-group col">
-              <label for='delivery' data-i18n="step2.service_opening_label"></label>        
+              <label for='delivery' data-i18n="step2.service_opening_label"></label>
               <input id='delivery' type='text' placeholder='' class="form-control"
-                data-i18n="[placeholder]step2.service_openingplaceholder" />        
+                data-i18n="[placeholder]step2.service_openingplaceholder" />
             </div>
             <!-- delivery description -->
             <div class="form-group col-sm-6">
@@ -351,73 +362,86 @@
                 data-i18n="[placeholder]step2.service_openingplaceholder" />
             </div>
           </div>
-          <hr class="my-3">
         </div>
+        
+        <hr class="my-3">
 
-        <!-- takeaway -->
-        <div class="row">
-          <div class="form-group col">
-            <label data-i18n="step2.takeaway"></label>
-            <div class=" form-check-inline w-100">
-              <div class="custom-control custom-radio">
-                <input type="radio" id="yes-takeaway" name="takeaway" class="custom-control-input form-check-input"
-                  value='yes'>
-                <label class="custom-control-label form-check-label" for="yes-takeaway" data-i18n="step2.yes"></label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" id="no-takeaway" name="takeaway" class="custom-control-input form-check-input"
-                  value='no'>
-                <label class="custom-control-label form-check-label" for="no-takeaway" data-i18n="step2.no"></label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" id="only-takeaway" name="takeaway" class="custom-control-input form-check-input"
-                  value='only'>
-                <label class="custom-control-label form-check-label" for="only-takeaway"
-                  data-i18n="step2.only_takeaway"></label>
-              </div>
+        <!-- takeaway toggle -->
+        <div class="form-row">
+          <div class="form-group col-sm-2">
+            <label id="takeaway-label" data-i18n="step2.takeawaydesc">Takeaway Label</label>
+          </div>
+          <div class="form-group col-sm-4" role="radiogroup" aria-labelledby="takeawaydesc-label">
+            <fieldset>
+              <input type="radio" name="takeaway" id="yes-takeaway" aria-disabled="true">
+              <label for="yes-takeaway" data-i18n="step2.yes">yes</label>
+        
+              <input type="radio" name="takeaway" id="no-takeaway">
+              <label for="no-takeaway" data-i18n="step2.no">no</label>
+        
+              <input type="radio" name="takeaway" id="only-takeaway" checked>
+              <label for="only-takeaway" data-i18n="step2.only_takeaway">only</label>
+            </fieldset>
+          </div>
+          <div class="form-group col-sm-1">
+            <button id="takeawayToggle" class="btn btn-primary" type="button" data-toggle="collapse"
+              data-target="#takeawaySection" aria-controls="takeawaySection" aria-expanded="false"
+              data-i18n="step2.expand_section">
+              takeaway
+            </button>
+          </div>
+        </div>
+        
+        <!-- delivery section -->
+        <div class="collapse " id="takeawaySection">
+          <div class="row">
+            <!-- takeaway opening hours -->
+            <div class="form-group col-sm-6">
+              <label for='takeaway' data-i18n="step2.service_opening_label"></label>
+              <input id='takeaway' type='text' placeholder='' class="form-control"
+                data-i18n="[placeholder]step2.service_openingplaceholder" />
+            </div>
+        
+            <!-- takeaway description -->
+            <div class="form-group col-sm-6">
+              <label for='takeaway_description' data-i18n="step2.service_description"></label>
+              <input id='takeaway_description' type='text' placeholder='' class="form-control"
+                data-i18n="[placeholder]step2.takeaway_descriptionplaceholder" />
             </div>
           </div>
-          <div class="form-group col-sm-6">
-            <label for='takeaway_description' data-i18n="step2.takeaway_description"></label>
-            <input id='takeaway_description' type='text' placeholder='' class="form-control"
-              data-i18n="[placeholder]step2.takeaway_descriptionplaceholder" />
-          </div>
-        </div>
-
-
-        <!-- takeaway_covid -->
-        <div class="row mt-2">
-          <div class="form-group col">
-            <span class="badge badge-danger">COVID-19</span> <label data-i18n="step2.takeaway_covid"></label>
-            <div class=" form-check-inline">
-              <div class="custom-control custom-radio">
-                <input type="radio" id="yes-takeaway-covid19" name="takeaway_covid"
-                  class="custom-control-input form-check-input" value='yes'>
-                <label class="custom-control-label form-check-label" for="yes-takeaway-covid19"
-                  data-i18n="step2.yes"></label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" id="no-takeaway-covid19" name="takeaway_covid"
-                  class="custom-control-input form-check-input" value='no'>
-                <label class="custom-control-label form-check-label" for="no-takeaway-covid19"
-                  data-i18n="step2.no"></label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" id="only-takeaway-covid19" name="takeaway_covid"
-                  class="custom-control-input form-check-input" value='only'>
-                <label class="custom-control-label form-check-label" for="only-takeaway-covid19"
-                  data-i18n="step2.only_takeaway"></label>
+        
+          <!-- takeaway_covid old -->
+          <div class="row mt-2">
+            <div class="form-group col">
+              <span class="badge badge-danger">COVID-19</span> <label data-i18n="step2.service_covid_label"></label>
+              <div class=" form-check-inline">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="yes-takeaway-covid19" name="takeaway_covid"
+                    class="custom-control-input form-check-input" value='yes'>
+                  <label class="custom-control-label form-check-label" for="yes-takeaway-covid19" data-i18n="step2.yes"></label>
+                </div>
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="no-takeaway-covid19" name="takeaway_covid"
+                    class="custom-control-input form-check-input" value='no'>
+                  <label class="custom-control-label form-check-label" for="no-takeaway-covid19" data-i18n="step2.no"></label>
+                </div>
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="only-takeaway-covid19" name="takeaway_covid"
+                    class="custom-control-input form-check-input" value='only'>
+                  <label class="custom-control-label form-check-label" for="only-takeaway-covid19"
+                    data-i18n="step2.only_takeaway"></label>
+                </div>
               </div>
             </div>
+            <!-- takeaway_covid -->
+            <div class="form-group col-sm-6">
+              <span class="badge badge-danger">COVID-19</span> <label for='takeaway_covid_description'
+                data-i18n="step2.takeaway_covid_description"></label>
+              <input id='takeaway_covid_description' type='text' placeholder='' class="form-control"
+                data-i18n="[placeholder]step2.service_openingplaceholder" />
+            </div>
           </div>
-          <!-- takeaway_covid -->
-          <div class="form-group col-sm-6">
-            <span class="badge badge-danger">COVID-19</span> <label for='takeaway_covid_description'
-              data-i18n="step2.takeaway_covid_description"></label>
-            <input id='takeaway_covid_description' type='text' placeholder='' class="form-control"
-              data-i18n="[placeholder]step2.takeaway_covid_descriptionplaceholder" />
-          </div>
-        </div>
+      </div>
 
         <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase" id='collect-data-done'
           data-i18n="step2.done"></button>
