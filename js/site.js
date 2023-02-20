@@ -207,13 +207,25 @@ $(window).on('hashchange', function () {
   findme_map.invalidateSize();
 });
 
+
+
 // Disables the input if delivery is not checked
 $('#delivery-check').prop('indeterminate', true);
-$(function () { deliveryCheck(); $("#delivery-check").click(deliveryCheck); });
-function deliveryCheck() { this.checked ? enableDelivery(): disableDelivery(); }
+$("#delivery-check").click(function (){ 
+  this.checked ? enableDelivery(): disableDelivery(); 
+})
 
-function disableDelivery() { $("#delivery").attr("disabled", true); $("#delivery_description").attr("disabled", true); $("#label-delivery-check").html(i18n.t('step2.no')); }
-function enableDelivery() { $("#delivery").removeAttr("disabled"); $("#delivery_description").removeAttr("disabled"); $("#label-delivery-check").html(i18n.t('step2.yes')); }
+function disableDelivery() {
+  $("#delivery").attr("disabled", true);
+  $("#delivery_description").attr("disabled", true); 
+  $("#label-delivery-check").html(i18n.t('step2.no'));
+}
+
+function enableDelivery() { 
+  $("#delivery").removeAttr("disabled"); 
+  $("#delivery_description").removeAttr("disabled"); 
+  $("#label-delivery-check").html(i18n.t('step2.yes')); }
+
 
 function getNoteBody() {
   var paymentIds = [],
@@ -222,7 +234,6 @@ function getNoteBody() {
     paymentIds.push(e.id);
     paymentTexts.push(e.text);
   });
-
 
   // add back translation of note header
   
@@ -242,17 +253,34 @@ function getNoteBody() {
   if ($("#categoryalt").val()) note_body += i18n.t('step2.cataltdesc') + ": " + $("#categoryalt").val() + "\n";
   if (paymentIds) note_body += i18n.t('step2.payment') + ": " + paymentTexts.join(",") + "\n";
  
-  if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() != "") note_body += " delivery=" + $("#delivery").val() + "\n"; else if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() == "") note_body += "delivery=yes" + "\n"; else if ($('#delivery-check').not(':indeterminate') == true) note_body += "delivery=no" + "\n";
+  // Delivery
+  let drive_through_clicked = false;
+  if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() != "") 
+    note_body += " delivery=" + $("#delivery").val() + "\n"; 
+    else if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() == "") 
+    note_body += "delivery=yes" + "\n"; 
+    else if ($('#delivery-check').not(':indeterminate') == true) 
+    note_body += "delivery=no" + "\n";
+    
   if ($("#delivery_description").val()) note_body += "delivery:description=" + $("#delivery_description").val() + "\n";
- 
-  if ($("input:checked[name=takeaway]").val() != "undefined") note_body += "takeaway=" + $("input:checked[name=takeaway]").val() + "\n";
-  if ($("#takeaway_description").val()) note_body += "takeaway:description=" + $("#takeaway_description").val() + "\n";
-  if ($("input:checked[name=takeaway_covid]").val() == "yes" || $("input:checked[name=takeaway_covid]").val() == "only") note_body += "takeaway:covid19=" + $("input:checked[name=takeaway_covid]").val() + "\n";
- 
+  // Delivery during covid
   if ($("input:checked[name=delivery_covid]").val() === 'Y') note_body += "delivery:covid19=yes\n";
-  if ($("#delivery_covid_description").val() || $("#takeaway_covid_description").val()) note_body += "description:covid19=";
+  if ($("#delivery_covid_description").val() || $("#takeaway_covid_description").val()) 
+    note_body += "description:covid19=";
   if ($("#delivery_covid_description").val()) note_body += $("#delivery_covid_description").val() + " ";
+  
+  // Take-away
+  if ($("input:checked[name=takeaway-check]").val() != "undefined") note_body += "takeaway=" + $("input:checked[name=takeaway]").val() + "\n";  
+  if ($("#takeaway_description").val()) note_body += "takeaway:description=" + $("#takeaway_description").val() + "\n";
+  // Take-away during Covid-19
+  if ($("input:checked[name=takeaway_covid]").val() == "yes" || $("input:checked[name=takeaway_covid]").val() == "only") 
+    note_body += "takeaway:covid19=" + $("input:checked[name=takeaway_covid]").val() + "\n"; 
   if ($("#takeaway_covid_description").val()) note_body += $("#takeaway_covid_description").val() + "\n";
+
+  // drive-through
+  if ($("input:checked[name=drive_through_yes]").val() != "undefined") note_body += "drive_through=" + $("input:checked[name=takeaway]").val() + "\n";  
+  if ($("#takeaway_description").val()) note_body += "takeaway:description=" + $("#takeaway_description").val() + "\n";
+  // drive-through during Covid-19
   return note_body;
 }
 
