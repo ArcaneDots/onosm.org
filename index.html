@@ -75,6 +75,9 @@
 
 <body>
   <div class='container-sm mt-3 mb-5' style='display: inline-block'>
+    <label for="languageSwitcher" data-i18n="app.languageSelector">
+      Language
+    </label>
     <select name='language' id='languageSwitcher'></select>
   </div>
   <div class="container-sm mt-3 mb-5">
@@ -113,7 +116,7 @@
         <p id="map-information" class="alert alert-warning mt-2" role="alert" style='display: none;'></p>
       </div>
       <div id='findme-map'></div>
-      <a class="btn btn-primary btn-lg text-white w-100 mt-3 text-uppercase disabled" id="continue" href="#details"
+      <a class="btn btn-primary btn-lg w-100 mt-3 text-uppercase font-weight-bold font-monospace disabled" id="continue" href="#details"
         data-i18n="step1.continue">
         Move to next step
       </a>
@@ -437,8 +440,8 @@
           </div>
       </div>
 
-        <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase" id='collect-data-done'
-          data-i18n="step2.done"></button>
+        <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase font-weight-bold font-monospace" id='collect-data-done'
+          data-i18n="step2.done">done</button>
       </form>
     </div>
 
@@ -451,7 +454,7 @@
 
       <div data-i18n="[html]step3.finalmessage"></div>
     </div>
-    <p class="font-weight-light small text-muted mt-4" data-i18n="[html]messages.credits"></p>
+    <p class="font-weight-bold font-monospace small mt-4" data-i18n="[html]messages.credits"></p>
   </div>
   <script src="js/i18n.js"></script>
   <script src='js/site.js'></script>

@@ -1,5 +1,6 @@
 ﻿{
   "app": {
+    "languageSelector": "Select language:",
     "title": "On OpenStreetMap",
     "desc": "OpenStreetMap is an open, global map used by people around the world to navigate and find local businesses.<br/> It's easy and free to add your business to the map!",
     "footer": "Source code available on <a href='https://github.com/osmlab/onosm.org'>GitHub</p>"
