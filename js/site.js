@@ -207,24 +207,93 @@ $(window).on('hashchange', function () {
   findme_map.invalidateSize();
 });
 
-
-
 // Disables the input if delivery is not checked
-$('#delivery-check').prop('indeterminate', true);
-$("#delivery-check").click(function (){ 
+$('#deliveryState').prop('indeterminate', true);
+
+// source: https://stackoverflow.com/questions/33155382/toggle-radio-buttons-checked-status-in-jquery
+$('.osm_section_option').on('click', function () {
+  var id = this.id;
+  if ($(this).data('checked')) {
+    $(this).prop('checked', false);
+    $(this).data('checked', false);
+  } else if ($(this).data('checked')) {
+    $(this).prop('checked', false);
+    $(this).data('checked', false);
+  } else {
+    $(this).data('checked', true);
+  }
+
+  console.log(id);
+  
+  //use: if (id.contains('only')) <- use with ES6 and above
+
+  // turn off other radio buttons where user clicks "only" option
+  if (id.indexOf('only') !== -1) {
+
+    let otherSelectedOptions = $(':radio[class=osm_section_option]:checked').not('[name=' + this.name + ']');
+    otherSelectedOptions.data('checked', false);
+    otherSelectedOptions.prop('checked', false);
+
+    let otherSectionOptions = $('[class=osm_section_option]').not('[name=' + this.name + ']');
+    otherSectionOptions.prop('disabled', true);
+  } else {
+    // undo disabled options
+    let otherSectionOptions = $('[class=osm_section_option]:disabled').not('[name=' + this.name + ']');
+    if (otherSectionOptions.length > 0) {
+      otherSectionOptions.prop('disabled', false);
+    }
+
+    // uncheck coorsponding options checked status
+    $(':radio[name=' + this.name + ']').not(this).data('checked', false);
+  }
+  
+});
+// $('input[type=radio][name=deliveryState]').change(function () {
+//   const clickedValue = $(this)[0];
+
+//   $('input:radio[class=test1][id=test2]').prop('checked', true);
+//   "deliveryState_no":
+//     $("#deliveryState_no").val([clickedValue]);
+//     break
+
+  
+//     $("#deliveryState_no").val([clickedValue]);
+//     break
+
+//   case "deliveryState_only":
+
+//     $("#deliveryState").val([clickedValue]);
+//     break
+
+
+//   switch (clickedValue.id) {
+//     case "deliveryState_no":
+//       $("[name=deliveryState]").val([clickedValue]);
+//       break
+
+//     case "deliveryState_yes":
+//       $("[name=deliveryState]").val([clickedValue]);
+//       break
+
+//     case "deliveryState_only":
+
+//       $("[name=deliveryState]").val([clickedValue]);
+//       break
+//   }
+// });
+
+$("#deliveryState").click(function (){ 
   this.checked ? enableDelivery(): disableDelivery(); 
 })
 
 function disableDelivery() {
   $("#delivery").attr("disabled", true);
   $("#delivery_description").attr("disabled", true); 
-  $("#label-delivery-check").html(i18n.t('step2.no'));
 }
 
 function enableDelivery() { 
   $("#delivery").removeAttr("disabled"); 
   $("#delivery_description").removeAttr("disabled"); 
-  $("#label-delivery-check").html(i18n.t('step2.yes')); }
 
 
 function getNoteBody() {
@@ -261,7 +330,7 @@ function getNoteBody() {
     note_body += "delivery=yes" + "\n"; 
     else if ($('#delivery-check').not(':indeterminate') == true) 
     note_body += "delivery=no" + "\n";
-    
+
   if ($("#delivery_description").val()) note_body += "delivery:description=" + $("#delivery_description").val() + "\n";
   // Delivery during covid
   if ($("input:checked[name=delivery_covid]").val() === 'Y') note_body += "delivery:covid19=yes\n";
