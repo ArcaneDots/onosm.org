@@ -230,70 +230,71 @@ $('.osm_section_option').on('click', function () {
   // turn off other radio buttons where user clicks "only" option
   if (id.indexOf('only') !== -1) {
 
+    // uncheck all other currently selected service radio buttons
     let otherSelectedOptions = $(':radio[class=osm_section_option]:checked').not('[name=' + this.name + ']');
     otherSelectedOptions.data('checked', false);
     otherSelectedOptions.prop('checked', false);
 
+    // disable other service radio-button groups 
     let otherSectionOptions = $('[class=osm_section_option]').not('[name=' + this.name + ']');
     otherSectionOptions.prop('disabled', true);
+
+    // collapse other open sections
+    if (id === 'takeawayState_only') {
+      collapseSection('#deliveryToggle')
+    }
+    else if (id === 'deliveryState_only') {
+      collapseSection('#takeawayToggle')
+    }
   } else {
-    // undo disabled options
+    // reenable previously disabele main service options
     let otherSectionOptions = $('[class=osm_section_option]:disabled').not('[name=' + this.name + ']');
     if (otherSectionOptions.length > 0) {
       otherSectionOptions.prop('disabled', false);
+      enableSection('#deliveryToggle')
+      enableSection('#takeawayToggle')
     }
+
+    // enableSection('#deliveryToggle')
+    // enableSection('#takeawayToggle')
 
     // uncheck coorsponding options checked status
     $(':radio[name=' + this.name + ']').not(this).data('checked', false);
   }
   
 });
-// $('input[type=radio][name=deliveryState]').change(function () {
-//   const clickedValue = $(this)[0];
-
-//   $('input:radio[class=test1][id=test2]').prop('checked', true);
-//   "deliveryState_no":
-//     $("#deliveryState_no").val([clickedValue]);
-//     break
-
-  
-//     $("#deliveryState_no").val([clickedValue]);
-//     break
-
-//   case "deliveryState_only":
-
-//     $("#deliveryState").val([clickedValue]);
-//     break
 
 
-//   switch (clickedValue.id) {
-//     case "deliveryState_no":
-//       $("[name=deliveryState]").val([clickedValue]);
-//       break
+// $("#deliveryState").click(function (){
+//   this.checked ? enableDelivery(): disableDelivery();
+// })
 
-//     case "deliveryState_yes":
-//       $("[name=deliveryState]").val([clickedValue]);
-//       break
+// function disableServiceSection(sectionName) {
+//   $("#delivery").attr("disabled", true);
+//   $("#delivery_description").attr("disabled", true);
+// }
 
-//     case "deliveryState_only":
+// function enableServiceSection(sectionName) {
+//   $("#delivery").removeAttr("disabled");
+//   $("#delivery_description").removeAttr("disabled");
+// }
 
-//       $("[name=deliveryState]").val([clickedValue]);
-//       break
-//   }
-// });
-
-$("#deliveryState").click(function (){ 
-  this.checked ? enableDelivery(): disableDelivery(); 
-})
-
-function disableDelivery() {
-  $("#delivery").attr("disabled", true);
-  $("#delivery_description").attr("disabled", true); 
+function enableSection(sectionId){
+  $(sectionId).removeAttr("disabled");
+}
+function disableSection(sectionId){
+  $(sectionId).attr("aria-expanded", false);
+  const collapseSection = $(sectionId).data("target");
+  $(collapseSection).removeClass("show");  
+  $(sectionId).attr("disabled", true);
 }
 
-function enableDelivery() { 
-  $("#delivery").removeAttr("disabled"); 
-  $("#delivery_description").removeAttr("disabled"); 
+function collapseSection(sectionId){
+  $(sectionId).attr("aria-expanded", false);
+  const collapseSection = $(sectionId).data("target");
+  $(collapseSection).removeClass("show");  
+  disableSection(sectionId);
+}
 
 
 function getNoteBody() {
