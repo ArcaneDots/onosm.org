@@ -238,26 +238,21 @@ $('.osm_section_option').on('click', function () {
     // disable other service radio-button groups 
     let otherSectionOptions = $('[class=osm_section_option]').not('[name=' + this.name + ']');
     otherSectionOptions.prop('disabled', true);
-
     // collapse other open sections
-    if (id === 'takeawayState_only') {
-      collapseSection('#deliveryToggle')
-    }
-    else if (id === 'deliveryState_only') {
-      collapseSection('#takeawayToggle')
-    }
+    let closeSections = new Sections();
+    closeSections.convertToggleSectionIds(otherSectionOptions);
+    closeSections.collapseAllSections();
+   
   } else {
     // reenable previously disabele main service options
     let otherSectionOptions = $('[class=osm_section_option]:disabled').not('[name=' + this.name + ']');
     if (otherSectionOptions.length > 0) {
       otherSectionOptions.prop('disabled', false);
-      enableSection('#deliveryToggle')
-      enableSection('#takeawayToggle')
+      let enableSections = new Sections();
+      enableSections.convertToggleSectionIds(otherSectionOptions);
+      enableSections.enableAllSections();
     }
-
-    // enableSection('#deliveryToggle')
-    // enableSection('#takeawayToggle')
-
+   
     // uncheck coorsponding options checked status
     $(':radio[name=' + this.name + ']').not(this).data('checked', false);
   }
@@ -265,36 +260,83 @@ $('.osm_section_option').on('click', function () {
 });
 
 
-// $("#deliveryState").click(function (){
-//   this.checked ? enableDelivery(): disableDelivery();
-// })
+let Sections = function() {
+  this.toggles = [];
+};
 
-// function disableServiceSection(sectionName) {
-//   $("#delivery").attr("disabled", true);
-//   $("#delivery_description").attr("disabled", true);
-// }
+//Looking for matching id named ___Toggle 
+Sections.prototype.convertToggleSectionIds = function (radioOptionList) {
+  // jquery list radio options
+  radioOptionList.each((index, element) => {
+    const toggle = element.name.slice(0, -5) + 'Toggle';
+    if (!this.toggles.includes(toggle)) {
+      this.toggles.push(toggle);
+    }
+  })
 
-// function enableServiceSection(sectionName) {
-//   $("#delivery").removeAttr("disabled");
-//   $("#delivery_description").removeAttr("disabled");
-// }
+  return this;
+};
 
-function enableSection(sectionId){
-  $(sectionId).removeAttr("disabled");
-}
-function disableSection(sectionId){
-  $(sectionId).attr("aria-expanded", false);
-  const collapseSection = $(sectionId).data("target");
-  $(collapseSection).removeClass("show");  
-  $(sectionId).attr("disabled", true);
-}
+Sections.prototype.collapseAllSections = function () {
+  // list of section id to be turned off
+  this.toggles.map(function (element) {    
+    new Section(element).disableSection();
+  })
+};
 
-function collapseSection(sectionId){
-  $(sectionId).attr("aria-expanded", false);
-  const collapseSection = $(sectionId).data("target");
-  $(collapseSection).removeClass("show");  
-  disableSection(sectionId);
-}
+Sections.prototype.enableAllSections = function () {
+  // list of section id to be turned on
+  this.toggles.map(function (element) {    
+    new Section(element).enableSection();
+  })
+};
+
+let Section = function(sectionId) {
+  this.sectionId = $('#' + sectionId);
+};
+
+Section.prototype.enableSection = function () {  
+  this.sectionId.removeAttr("disabled");
+};
+
+Section.prototype.disableSection = function () {
+  this.sectionId.attr("aria-expanded", false);
+  const collapseSection = this.sectionId.data("target");
+  $(collapseSection).removeClass("show");
+  this.sectionId.attr("disabled", true);
+};
+
+// //Looking for matching id named ___Toggle 
+// jQuery.fn.getToggleSectionId = function () {  
+//   let toggles = [];
+  
+//   $.map( $(this), function (element) {
+//     const toggle = element.name.slice(0, -5) + 'Toggle';
+//     if ($.inArray(toggle, toggles)) 
+//     { 
+//       toggles.push(toggle) 
+//     }
+//   })
+
+//   return toggles; 
+// };
+
+// jQuery.fn.collapseAllSections = function () {
+//   this.each(function () {    
+//     this.disableSection();
+//   })
+// };
+
+// jQuery.fn.enableSection = function () {
+//   this.removeAttr("disabled");
+// };
+
+// jQuery.fn.disableSection = function () {
+//   this.attr("aria-expanded", false);
+//   const collapseSection = this.data("target");
+//   $(collapseSection).removeClass("show");
+//   this.attr("disabled", true);
+// };
 
 
 function getNoteBody() {
