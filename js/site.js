@@ -4,340 +4,63 @@ var i18n = i18next;
 
 var successString, manualPosition, loadingText, modalText;
 
-function reloadLists(language) {
-
-  $.getJSON('./locales/' + language + '/categories.json')
-    .success(function (data) {
-      category_data = data;
-    })
-    .fail(function () {
-      // 404? Fall back to en-US
-      $.getJSON('./locales/en-US/categories.json')
-      .success(function (data) {
-        category_data = data;
-      });
-    });
-
-  $.getJSON('./locales/' + language + '/payment.json').success(function (data) {
-    payment_data = data;
-  });
-
-  $('#category').children().remove().end();
-  $("#category").select2({
-    query: function (query) {
-      var data = {
-        results: []
-      },
-        i;
-      for (i = 0; i < category_data.length; i++) {
-        if (query.term.length === 0 || category_data[i].toLowerCase().indexOf(query.term.toLowerCase()) >= 0) {
-          data.results.push({
-            id: category_data[i],
-            text: category_data[i]
-          });
-        }
-      }
-      query.callback(data);
-    }
-  });
-
-  $('#payment').children().remove().end();
-  $("#payment").select2({
-    multiple: true,
-    query: function (query) {
-      var data = {
-        results: []
-      };
-      data.results = payment_data;
-      query.callback(data);
-    }
-  });
-}
-
-/* HERE BE DRAGONS */
-var findme_map = L.map('findme-map')
-  .setView([41.69, 12.71], 5),
-  osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  osm = L.tileLayer(osmUrl, {
-    minZoom: 2,
-    maxZoom: 18,
-    attribution: "Data &copy; OpenStreetMap contributors"
-  }).addTo(findme_map),
-  esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-  });
-
-var baseMaps = {
-  "Mapnik": osm,
-  "Esri WorldImagery": esri
-};
-L.control.layers(baseMaps).addTo(findme_map);
-
-var category_data = [];
-var payment_data = [];
-
-var findme_marker = L.marker([41.69, 12.71], {
-  draggable: true
-}).addTo(findme_map);
-
-findme_marker.setOpacity(0);
-
-L.control.locate({
-  follow: true
-}).addTo(findme_map);
+const deliveryService = new ServiceData('delivery');
+const takeawayService = new ServiceData('takeaway');
 
 
-if (location.hash) location.hash = '';
+var services = new Map();
+services.set('delivery', deliveryService);
+services.set('takeaway', takeawayService);
 
-/* search action */
-$("#find").submit(function (e) {
-  e.preventDefault();
-  $("#couldnt-find").hide();
-  var address_to_find = $("#address").val();
-  if (address_to_find.length === 0) return;
-
-  /* NOMINATIM PARAM */
-  var qwarg_nominatim = {
-    format: 'json',
-    q: address_to_find,
-    addressdetails: 1,
-    namedetails: 1
-  };
-  var url_nominatim = "https://nominatim.openstreetmap.org/search?" + $.param(qwarg_nominatim);
-
-
-  $("#findme h4").text(loadingText);
-  $("#findme").addClass("progress-bar progress-bar-striped progress-bar-animated");
-
-
-  $.ajax({
-    'url': url_nominatim,
-    'success': nominatim_callback,
-    'dataType': 'jsonp',
-    'jsonp': 'json_callback'
-  });
-
-});
-
-function nominatim_callback(data) {
-  if (data.length > 0) {
-    var chosen_place = data[0];
-
-    var bounds = new L.LatLngBounds(
-      [+chosen_place.boundingbox[0], +chosen_place.boundingbox[2]],
-      [+chosen_place.boundingbox[1], +chosen_place.boundingbox[3]]);
-
-    findme_map.fitBounds(bounds);
-    findme_marker.setOpacity(1);
-    findme_marker.setLatLng([chosen_place.lat, chosen_place.lon]);
-    $('#step2').removeClass("disabled");
-    $('#continue').removeClass("disabled");
-    $('.step-2 a').attr('href', '#details');
-    $('#addressalt').val(chosen_place.address.road);
-    $('#hnumberalt').val(chosen_place.address.house_number);
-    $('#city').val(chosen_place.address.village || chosen_place.address.town || chosen_place.address.city);
-    $('#postcode').val(chosen_place.address.postcode);
-    $("#address").val(chosen_place.display_name);
-    $("#map-information").html(successString);
-    $("#map-information").show();
-    if (!chosen_place.address.house_number) {
-      $("#map-information").append('<hr> <i class="twa twa-warning"></i> ' + i18n.t('step1.nohousenumber'));
-    }
-    $("#address").addClass("is-valid");
-    $("#address").removeClass("is-invalid");
-  } else {
-    $("#couldnt-find").show();
-    $("#map-information").hide();
-    $("#address").addClass("is-invalid");
-    $("#address").removeClass("is-valid");
-  }
-  $("#findme").removeClass("progress-bar progress-bar-striped progress-bar-animated");
-}
-
-function solr_callback(data) {
-  if (data.response.docs.length > 0) {
-    var docs = data.response.docs;
-    var coords = docs[0].coordinate.split(',');
-    findme_marker.setOpacity(1);
-    findme_marker.setLatLng([coords[0], coords[1]]);
-    findme_map.setView([coords[0], coords[1]], 16);
-    $("#map-information").html(successString);
-    $("#map-information").show();
-    $('#step2').removeClass("disabled");
-    $('#continue').removeClass("disabled");
-    $('.step-2 a').attr('href', '#details');
-  } else {
-    $("#couldnt-find").show();
-    $("#map-information").hide();
-  }
-  $("#findme").removeClass("loading");
-}
-
-/* map action */
-findme_map.on('click', function (e) {
-  findme_marker.setOpacity(1);
-  findme_marker.setLatLng(e.latlng);
-  $("#map-information").html(manualPosition);
-  $("#map-information").show();
-  $('.step-2 a').attr('href', '#details');
-  $('#step2').removeClass("disabled");
-  $('#continue').removeClass("disabled");
-});
-
-$(window).on('hashchange', function () {
-  if (location.hash == '#details') {
-    $('#collect-data-step').removeClass('d-none');
-    $('#address-step').addClass('d-none');
-    $('#confirm-step').addClass('d-none');
-    $('#step2').addClass('active bg-success');
-    $('#step3').removeClass('active bg-success');
-  } else if (location.hash == '#done') {
-    $('#confirm-step').removeClass('d-none');
-    $('#collect-data-step').addClass('d-none');
-    $('#address-step').addClass('d-none');
-    $('#step3').addClass('active bg-success');
-    //confetti.start(1000);
-  } else {
-    $('#address-step').removeClass('d-none');
-    $('#collect-data-step').addClass('d-none');
-    $('#confirm-step').addClass('d-none');
-    $('#step2').removeClass('active bg-success');
-    $('#step3').removeClass('active bg-success');
-  }
-  findme_map.invalidateSize();
-});
 
 // Disables the input if delivery is not checked
-$('#deliveryState').prop('indeterminate', true);
+$('#delivery_state').prop('indeterminate', true);
 
-// source: https://stackoverflow.com/questions/33155382/toggle-radio-buttons-checked-status-in-jquery
+// top-level services radio button click handler
 $('.osm_section_option').on('click', function () {
-  var id = this.id;
-  if ($(this).data('checked')) {
-    $(this).prop('checked', false);
-    $(this).data('checked', false);
-  } else if ($(this).data('checked')) {
-    $(this).prop('checked', false);
-    $(this).data('checked', false);
-  } else {
-    $(this).data('checked', true);
-  }
+  // source: https://stackoverflow.com/questions/33155382/toggle-radio-buttons-checked-status-in-jquery
 
-  console.log(id);
+  const selectedOptionId = this.id;
   
+  let selectedOption = new ServiceId(selectedOptionId, selectedOptionId.value);
+
+  console.log(selectedOptionId);
+
   //use: if (id.contains('only')) <- use with ES6 and above
 
   // turn off other radio buttons where user clicks "only" option
-  if (id.indexOf('only') !== -1) {
+  if (selectedOption.getValue() === 'only') {
 
-    // uncheck all other currently selected service radio buttons
-    let otherSelectedOptions = $(':radio[class=osm_section_option]:checked').not('[name=' + this.name + ']');
-    otherSelectedOptions.data('checked', false);
-    otherSelectedOptions.prop('checked', false);
+    // disable other checked radio-button in top-level group 
+    let otherSelectedOptions = $('[class=osm_section_option]').not('[name=' + this.name + ']');
+    const turnOffSection = new Sections(otherSelectedOptions, services).convertToggleSectionIds();
+    turnOffSection.collapseAllSections(true);
 
-    // disable other service radio-button groups 
-    let otherSectionOptions = $('[class=osm_section_option]').not('[name=' + this.name + ']');
-    otherSectionOptions.prop('disabled', true);
-    // collapse other open sections
-    let closeSections = new Sections();
-    closeSections.convertToggleSectionIds(otherSectionOptions);
-    closeSections.collapseAllSections();
-   
   } else {
-    // reenable previously disabele main service options
+    // reenable previously disabled main service options
     let otherSectionOptions = $('[class=osm_section_option]:disabled').not('[name=' + this.name + ']');
     if (otherSectionOptions.length > 0) {
-      otherSectionOptions.prop('disabled', false);
-      let enableSections = new Sections();
-      enableSections.convertToggleSectionIds(otherSectionOptions);
+      //otherSectionOptions.prop('disabled', false);
+      let enableSections = new Sections(otherSectionOptions,services);
+      enableSections.convertToggleSectionIds();
       enableSections.enableAllSections();
     }
-   
-    // uncheck coorsponding options checked status
-    $(':radio[name=' + this.name + ']').not(this).data('checked', false);
   }
-  
+
+  // update "checked" attribute??
+  $(':radio[name=' + this.name + ']').not(selectedOptionId).data('checked', false);
+
+  // update 'service' based on checked option 
+  const sectionName = selectedOption.getSection();
+  const optionValue = selectedOption.getValue()
+  let currentService = services.get(sectionName);
+  currentService.setValue(optionValue);
+
+  // log final state change
+  for (const _service of services.keys()) {
+    console.log(_service + ': ' + services.get(_service).getValue());
+  };
 });
-
-
-let Sections = function() {
-  this.toggles = [];
-};
-
-//Looking for matching id named ___Toggle 
-Sections.prototype.convertToggleSectionIds = function (radioOptionList) {
-  // jquery list radio options
-  radioOptionList.each((index, element) => {
-    const toggle = element.name.slice(0, -5) + 'Toggle';
-    if (!this.toggles.includes(toggle)) {
-      this.toggles.push(toggle);
-    }
-  })
-
-  return this;
-};
-
-Sections.prototype.collapseAllSections = function () {
-  // list of section id to be turned off
-  this.toggles.map(function (element) {    
-    new Section(element).disableSection();
-  })
-};
-
-Sections.prototype.enableAllSections = function () {
-  // list of section id to be turned on
-  this.toggles.map(function (element) {    
-    new Section(element).enableSection();
-  })
-};
-
-let Section = function(sectionId) {
-  this.sectionId = $('#' + sectionId);
-};
-
-Section.prototype.enableSection = function () {  
-  this.sectionId.removeAttr("disabled");
-};
-
-Section.prototype.disableSection = function () {
-  this.sectionId.attr("aria-expanded", false);
-  const collapseSection = this.sectionId.data("target");
-  $(collapseSection).removeClass("show");
-  this.sectionId.attr("disabled", true);
-};
-
-// //Looking for matching id named ___Toggle 
-// jQuery.fn.getToggleSectionId = function () {  
-//   let toggles = [];
-  
-//   $.map( $(this), function (element) {
-//     const toggle = element.name.slice(0, -5) + 'Toggle';
-//     if ($.inArray(toggle, toggles)) 
-//     { 
-//       toggles.push(toggle) 
-//     }
-//   })
-
-//   return toggles; 
-// };
-
-// jQuery.fn.collapseAllSections = function () {
-//   this.each(function () {    
-//     this.disableSection();
-//   })
-// };
-
-// jQuery.fn.enableSection = function () {
-//   this.removeAttr("disabled");
-// };
-
-// jQuery.fn.disableSection = function () {
-//   this.attr("aria-expanded", false);
-//   const collapseSection = this.data("target");
-//   $(collapseSection).removeClass("show");
-//   this.attr("disabled", true);
-// };
-
 
 function getNoteBody() {
   var paymentIds = [],
@@ -424,3 +147,12 @@ function clearFields() {
   $('#delivery-check').prop('indeterminate', true);
   disableDelivery();
 }
+
+
+
+
+
+
+
+
+
