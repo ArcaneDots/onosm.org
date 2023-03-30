@@ -280,17 +280,18 @@ findme_marker.on('dragend', function (dragged_event) {
         [+nominatim_boundingBox[1], +nominatim_boundingBox[3]]);
 
       // user location is outside nominatim's bounding box (in a lake or some other bad business location)
-      if (!nominatimBounds._bounds.contains(eventMarkerLocation)) {
+      if (!nominatimBounds.contains(eventMarkerLocation)) {
 
         if (findme_boundingBox._bounds.contains(nominatimNearbyPosition)) {
           // use the Nominatim supplied point since the user one is outside the Nominatim bounding box
           finalMarkerPositionLatLng = Object.assign({}, nominatimNearbyPosition);
 
-        } else {       
+        } else {
           // revert the "drag" since both locations are out of bounds
           finalMarkerPositionLatLng = Object.assign({}, activeMarkerLatLng);
         }
       }
+      
 
       $("#map-information").html(manualPosition);
       $("#map-information").show();
