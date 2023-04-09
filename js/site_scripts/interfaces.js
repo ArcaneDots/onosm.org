@@ -1,160 +1,403 @@
+/**
+ * @typedef {string} osmTagName
+ */
 
-class Sections {
-  constructor(radioOptionList, services) { 
-    this.radioOptionList = radioOptionList,
-    this.services = services,
-    this.sectionNames = []   
-  }
-  // call first
-  //Looking for matching id named ___Toggle 
-  convertToggleSectionIds() {
-    // jquery list radio options
-    this.radioOptionList.each((index, element) => {
-      const sectionName = element.name.split('_')[0];
-      if (!this.sectionNames.includes(sectionName)) {
-        this.sectionNames.push(sectionName);
+/**
+ * @typedef {object} TagValue 
+ * @param {string|RADIO_TYPES}
+ * 
+ */
+function TagValue(initValue) {
+  let internalValue = toValueRadioType(initValue);
+
+  /**
+   * @param {string|RADIO_TYPES} userValue
+   * @returns {RADIO_TYPES}
+   */
+  function toValueRadioType(userValue) {
+    let result = RadioTypes.TYPE_UNKNOWN;
+
+    if (userValue === undefined) {
+      result = RadioTypes.TYPE_UNKNOWN
+    }
+
+    if (typeof userValue === "string") {
+      switch (userValue.trim().toLowerCase()) {
+        case "yes":
+          result =  RadioTypes.TYPE_YES;
+          break;
+        case "no":
+          result =  RadioTypes.TYPE_NO;
+          break;
+        case "only":
+          result =  RadioTypes.TYPE_ONLY;
+          break;
+        default:
+          result =  RadioTypes.TYPE_UNKNOWN;
       }
-    });
+    }
+    if (typeof userValue === RadioTypes) {
+      result = userValue
+    }
 
-    return this;
+    return result;
   }
-  collapseAllSections() {
-    // disable service level radio-button"? confirm with 2 sections
-    this.radioOptionList.removeAttr('checked');
-    this.radioOptionList.prop('disabled', true);
-    //this.radioOptionList.data('checked', false);
 
-
-    // list of section id to be turned off
-    this.sectionNames.forEach(function (sectionName) {
-      if (this.services.has(sectionName)) {
-        this.services.get(sectionName).setValue();
-      }
-      new Section(sectionName  + 'Toggle').disableSection();
-    }, this );
+  function setValue(value) {
+    internalValue = toValueRadioType(value)
   }
-  enableAllSections() {
-    // enable service level radio-button? confirm with 2 sections
-    this.radioOptionList.removeAttr('disabled');
+  /**
+    * @returns {RADIO_TYPES}
+    */
+  function getValue() {
+    return internalValue;
+  }
 
-    // list of section id to be turned on
-    this.sectionNames.map(function (sectionName) {
-      new Section(sectionName  + 'Toggle').enableSection();
-    });
+  /**
+   * @param {RADIO_TYPES} enumState
+   */
+  function isEqual(enumState){
+    return (internalValue === toValueRadioType(enumState));
+  }
+
+  return {
+    get: getValue,
+    set: setValue,
+    isEqual
   }
 }
 
-class Section {
-  constructor(sectionId) {
-    this.sectionId = $('#' + sectionId);
+/**
+ * @typedef {object} UserSelectionData
+ *  
+ * @param {*} htmlTag 
+ * @param {string} value 
+ */
+function UserSelectionData(htmlTag, value) {  
+  const tag = parseTag(htmlTag);
+  const tagParts = tag.split("_");
+  const radioValue = (tagParts.length > 2) ? tagParts[2] : value;
+  const name = tagParts[0];
+
+  function parseTag(sectionIdSource) {
+    if (typeof sectionIdSource === 'string') {
+      return sectionIdSource;
+    }
+    else if (typeof sectionIdSource === 'object') {
+      if (sectionIdSource.id !== undefined) {// JQuery object 
+        return sectionIdSource.id;
+      }
+    }
   }
-  enableSection() {
+
+  /**
+   * @returns {string}
+   */
+  function sectionName() {
+    return name;
+  };
+
+  /**
+   * 
+   * @returns {object}
+   */
+  function jqueryObject() {
+    return $(htmlTag);
+  };
+
+  return {
+    sectionName,
+    jqueryObject,
+    value: radioValue
+  };
+}
+
+/**
+ * @typedef {object} ServiceData
+ * @param {sectionName} name 
+ */
+function ServiceData(name) {
+  const prefix = name.toLowerCase();
+  const radioValue = TagValue('no')
+  let activeSection = true;
+
+  function sectionName() { 
+    return prefix; 
+  }
+
+  function stateId() {
+    return $(`#${prefix}_State`);
+  }
+
+  function sectionToggle() {
+    return `${prefix}Toggle`
+  }
+
+  function sectionId() {
+    return $(`#${prefix}Section`);
+  }
+
+  function getValue() {
+    return radioValue.get();
+  }
+
+  function setValue(value) {
+    radioValue.set(value);
+
+    if (!radioValue.isEqual(RadioTypes.TYPE_UNKNOWN)){
+      enableSection();
+    } 
+    
+    else {
+      disableSection();
+    }
+  }
+
+  function enableSection() {
     // allow user to expand the section
-    this.sectionId.removeAttr("disabled");
+    if (!activeSection) {
+      activeSection = true;
+      sectionId.removeAttr("disabled");
+    }
   }
-  disableSection() {
+  function disableSection() {
     // tell aria section is disabled
-    this.sectionId.attr("aria-expanded", false);
+    if (!activeSection) {
+      activeSection = false
+      sectionId.attr("aria-expanded", false);
 
-    this.sectionId.prop('disabled', true);
+      sectionId.prop('disabled', true);
 
-    // find data-target and disable the actual div section
-    const collapseSection = this.sectionId.data("target");
-    $(collapseSection).removeClass("show");
-    this.sectionId.attr("disabled", true);
-  }
-}
-
-class ServiceId {
-  constructor(sectionId, value) {
-    this.sectionId = sectionId,
-    this.sectionParts = sectionId.split("_"),
-    this.value = value
-  }
-
-  getId() {
-    return this.sectionId;
-  }
-  
-  getJqueryId() {
-    return $(this.sectionId);
-  }
-
-  getSection() {
-    return this.sectionParts[0]
-  }
-
-  getName() {
-    return this.sectionParts[0]
-  }
-
-  getValue() {
-    const localValue = (this.sectionParts.length > 2) ? this.sectionParts[2] : this.value;
-    return localValue.toLowerCase();
-  }
-}
-
-class ServiceData {
-  constructor(labelString) {
-    this.label = labelString,
-    this.value = "no",
-    this.hours = "",
-    this.description = "",
-    this.covid19Active = "no",
-    this.covid19Hours = "no";
-  }
-  getLabel() {
-    return this.label;
-  }
-  getValue() {
-    return this.value;
-  }
-  setValue(userIsActive) {
-
-    if (userIsActive === undefined) {
-      this.value = userIsActive
-      return
-    }
-
-    const isActive = userIsActive.toLowerCase();
-    if (isActive === "yes" || isActive === "no" || isActive === "only") {
-      this.value = isActive;
-    }      
-  }
-
-  getDescription() {
-    return this.description;
-  }
-
-  setDescription(userDescription) {
-    this.description = userDescription.toString(value);
-  }
-
-  getHours() {
-    return this.hours;
-  }
-
-  setHours(userHours) {
-    this.hours = userHours.toString();
-  }
-
-  getCovid19Active() {
-    return this.covid19Active;
-  }
-  
-  setCovid19Active(userIsActive) {
-    isActive = userIsActive.toLowerCase();
-    if (isActive === "yes" || isActive === "no" || isActive === "only") {
-      this.covid19Active = isActive;
+      // find data-target and disable the actual div section
+      const collapseSection = sectionId.data("target");
+      $(collapseSection).removeClass("show");
+      sectionId.attr("disabled", true);
     }
   }
-  getCovid19Hours() {
-    return this.covid19Hours;
-  }
-  setCovid19Hours(userHours) {
-    this.covid19Hours = userHours.toString();
+  return {
+    sectionName,
+    stateId,
+    sectionId,
+    sectionToggle,
+    getValue,
+    setValue
   }
 }
+
+/**
+ * @typedef {object} OsmKey_ServiceData
+ * @property {osmTagName} tagName
+ * @property {ServiceData} serviceObject
+ */
+
+/**
+ * Collection of internally named services
+ * @typedef {Map<osmName, ServiceData>} Services
+ */
+function ServicesMap() {
+  const serviceDataMap = [];
+  const serviceIterator = iterator(serviceDataMap);
+
+  /**
+   * 
+   * @param {string} osmName 
+   * @param {ServiceData} serviceObject 
+   */
+  function add(osmName, serviceObject) {
+    if (osmName === undefined ||
+      serviceObject === undefined) {
+      return;
+    }
+    const entry = { name: osmName, ServiceData: serviceObject }
+    serviceDataMap.push(entry);
+  }
+
+  /**
+   * 
+   * @param {string} osmName 
+   * @returns {ServiceData} matching service object
+   */
+  function get(osmName) {
+    const matchingObject = serviceDataMap.find(item => item.name === osmName);
+    if (matchingObject !== undefined) {
+      return matchingObject.ServiceData
+    }
+    return undefined;
+  }
+
+  function list(){
+    return serviceDataMap.values();
+  }
+
+  function iterator(array) {
+    let currentIndex = -1;
+
+    function next() {
+      currentIndex = currentIndex + 1;
+      return currentIndex < array.length ? {
+        value: array[currentIndex],
+        done: false
+      } : {
+        value: "index out of range",
+        done: true
+      };
+    }
+    function previous() {
+      currentIndex = currentIndex - 1;
+      return currentIndex >= 0 ? {
+        value: array[currentIndex],
+        done: false
+      } : {
+        value: undefined,
+        done: true
+      };
+    }
+    return {
+      next,
+      previous
+    }
+  }
+  return {
+    get,
+    add,
+    list,
+    iterator: serviceIterator,
+  };
+}
+
+// /**
+//  * Radio button -> Service state 
+//  * @param {Array<Object>} selectedOptionIds
+//  * @param {{Array<ServiceData>}} availableServices 
+//  */
+function SectionHandler(radioOptionList, availableServices) {
+  // /**
+  //  * @type {Array<Services>}
+  //  */
+  // const serviceList = getOtherServices(radioOptionList, availableServices);
+
+  // /**
+  //  * 
+  //  * @param {*} options 
+  //  * @param {Services} availableServices 
+  //  * @returns {Array<Services>}
+  //  */
+  // function getOtherServices(options, availableServices) {
+
+  const sectionList = [];
+
+  for (const radioOption of radioOptionList) {  
+    const userData = UserSelectionData(radioOption, radioOption.value);
+    const selectedSection = userData.sectionName();
+    if (sectionList.findIndex(element => element == selectedSection) == -1) {
+      sectionList.push(selectedSection);
+    }
+  };
+
+  // const allServices = availableServices.values;
+  // const serviceList = [];
+  // sectionList.forEach(sectionName => {
+
+  //   const selectedData =
+  //     allServices.find(elementService => elementService.sectionName == sectionName);
+
+  //   if (selectedData != undefined) {
+  //     serviceList.push(selectedData);
+  //   }
+  // });
+
+  function collapseAllSections() {
+    // disable service level radio-button"? confirm with 2 sections
+    radioOptionList.removeAttr('checked');
+    radioOptionList.prop('disabled', true);
+
+    sectionList.forEach(sectionName => {
+
+      const selectedData =
+        availableServices.find(elementService => elementService.sectionName() == sectionName);
+
+      if (selectedData != undefined) {
+        selectedData.setValue(RadioTypes.TYPE_UNKNOWN) // =>  .disable()
+      }
+    });
+
+    // serviceList.forEach(element => {
+    //   element.setValue.setValue(TYPE_UNKNOWN) // =>  .disable()
+    // })
+  }
+
+
+  // // list of section id to be turned off
+  // sectionNames.forEach(sectionName => {
+  //   if (availableServices.has(sectionName)) {
+  //     availableServices.get(sectionName).setValue(TYPE_UNKNOWN)
+  //   }
+  //   new Section(sectionName).disableSection();
+  // }, this);
+
+
+  function enableAllSections() {
+    // enable service level radio-button? confirm with 2 sections
+    radioOptionList.removeAttr('disabled');
+
+    sectionList.forEach(sectionName => {
+
+      const selectedData =
+        availableServices.find(elementService => elementService.sectionName() == sectionName);
+
+      if (selectedData != undefined) {
+        selectedData.setValue(RadioTypes.TYPE_NO) // => .enable()
+      }
+    });
+
+    // serviceList.forEach(element => {
+    //   element.setValue.setValue(TYPE_NO) // => .enable()
+    // });
+
+    // // list of section id to be turned on
+    // sectionNames.forEach(sectionName => {
+    //   new Section(sectionName).enableSection();
+    // });
+  }
+  return {
+    collapseAllSections,
+    enableAllSections
+  };
+}
+
+// class Section {
+//   constructor(sectionId) {
+//     this.sectionId = $('#' + sectionId);
+//   }
+//   enableSection() {
+//     // allow user to expand the section
+//     this.sectionId.removeAttr("disabled");
+//   }
+//   disableSection() {
+//     // tell aria section is disabled
+//     this.sectionId.attr("aria-expanded", false);
+
+//     this.sectionId.prop('disabled', true);
+
+//     // find data-target and disable the actual div section
+//     const collapseSection = this.sectionId.data("target");
+//     $(collapseSection).removeClass("show");
+//     this.sectionId.attr("disabled", true);
+//   }
+// }
+
+/**
+ * @enum { string }
+ */
+const RadioTypes = {
+  TYPE_YES: "yes",
+  TYPE_NO: "no",
+  TYPE_ONLY: "only",
+  TYPE_UNKNOWN: "unknown"
+}
+
+/** @typedef {'TYPE_YES'|'TYPE_NO'|'TYPE_ONLY'|'TYPE_UNKNOWN'} RADIO_TYPES */
+
 
 
 

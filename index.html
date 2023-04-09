@@ -297,7 +297,53 @@
 
         <hr class="my-3">
 
-        <!-- delivery toogle-->
+        <!-- drive-thru toggle-->
+        <div class="form-row">
+          <div class="form-group col-sm-2">
+            <label id="drive-thru_section_label" data-i18n="step2.drive-thrudesc">Takeaway Label</label>
+          </div>
+          <div class="form-group col-sm-4" role="radiogroup" aria-labelledby="drive-thru_section_label">
+            <fieldset>                
+              <input type="radio" name="drive-thru_state" id="drive-thru_state_no" class="osm_section_option" checked>
+              <label for="drive-thru_state_no" data-i18n="step2.no">no</label>
+
+              <input type="radio" name="drive-thru_state" id="drive-thru_state_yes" class="osm_section_option">
+              <label for="drive-thru_state_yes" data-i18n="step2.yes">yes</label>
+        
+              <input type="radio" name="drive-thru_state" id="drive-thru_state_only" class="osm_section_option">
+              <label for="drive-thru_state_only" data-i18n="step2.only">only</label>
+            </fieldset>
+          </div>
+          <div class="form-group col-sm-1">
+            <button id="drive-thruToggle" class="btn text-dark btn-outline-primary" type="button" data-toggle="collapse"
+              data-target="#drive-thruSection" aria-controls="drive-thruSection" aria-expanded="false"
+              data-i18n="step2.expand_section">
+              Drive-thru
+            </button>
+          </div>
+        </div>
+
+        <!-- drive-thru section -->
+        <div class="collapse " id="drive-thruSection">
+          <div class="row">
+            <!-- drive-thru -->
+            <div class="form-group col">
+              <label for='drive-thru_hours' data-i18n="step2.service_opening_label"></label>
+              <input id='drive-thru_hours' type='text' placeholder='' class="form-control"
+                data-i18n="[placeholder]step2.service_openingplaceholder" />
+            </div>
+            <!-- drive-thru description -->
+            <div class="form-group col-sm-6">
+              <label for='drive-thru_description' data-i18n="step2.service_description"></label>
+              <input id='drive-thru_description' type='text' placeholder='' class="form-control"
+                data-i18n="[placeholder]step2.delivery_descriptionplaceholder" />
+            </div>
+          </div>
+        </div>
+        
+        <hr class="my-3">
+
+        <!-- delivery toggle-->
         <div class="form-row">
           <div class="form-group col-sm-2">
             <label id="delivery_section_label" data-i18n="step2.deliverydesc">Takeaway Label</label>
@@ -337,33 +383,6 @@
               <label for='delivery_description' data-i18n="step2.service_description"></label>
               <input id='delivery_description' type='text' placeholder='' class="form-control"
                 data-i18n="[placeholder]step2.delivery_descriptionplaceholder" />
-            </div>
-          </div>
-        
-          <!-- delivery_covid -->
-          <div class="row mt-2">
-            <div class="form-group col">
-              <span class="badge badge-danger">COVID-19</span> 
-              <label id="delivery_covidState_label" data-i18n="step2.service_covid_label"></label>
-              <div class=" form-check-inline">
-                <div class="form-group" role="radiogroup" aria-labelledby="delivery_covidState_label">     
-                  <input type="radio" id="delivery_covidState_no" name="delivery_covidState" value='no' checked>
-                  <label for="delivery_covidState_no" data-i18n="step2.no"></label>         
-                                         
-                  <input type="radio" id="delivery_CovidState_yes" name="delivery_covidState" value='yes'>
-                  <label for="delivery_covidState_yes" data-i18n="step2.yes"></label>
-              
-                  <input type="radio" id="delivery_covidState_only" name="delivery_covidState" value='only'>
-                  <label for="delivery_covidState_only" data-i18n="step2.only"></label>                  
-                </div>
-              </div>
-            </div>
-            <!-- delivery_covid hours-->
-            <div class="form-group col-sm-6">
-              <span class="badge badge-danger">COVID-19</span> <label for='delivery_covidDescription'
-                data-i18n="step2.service_covid_opening_label"></label>
-              <input id='delivery_covidDescription' type='text' placeholder='' class="form-control"
-                data-i18n="[placeholder]step2.service_openingplaceholder" />
             </div>
           </div>
         </div>
@@ -412,33 +431,7 @@
               <input id='takeaway_description' type='text' placeholder='' class="form-control"
                 data-i18n="[placeholder]step2.takeaway_descriptionplaceholder" />
             </div>
-          </div>
-        
-          <!-- takeaway covid19 -->
-          <div class="row mt-2">
-            <div class="form-group col">
-              <span class="badge badge-danger">COVID-19</span> <label id="takeaway_covid19_label" data-i18n="step2.service_covid_label"></label>            
-              <div class=" form-check-inline">
-              <div class="form-group" role="radiogroup" aria-labelledby="takeaway_covid19_label">          
-                <input type="radio" id="takeaway_covid19_no" name="takeaway_covid19" value='no' checked>
-                <label for="takeaway_covid19_no" data-i18n="step2.no"></label>
-          
-                <input type="radio" id="takeaway_covid19_yes" name="takeaway_covid19" value='yes'>
-                <label for="takeaway_covid19_yes" data-i18n="step2.yes"></label>
-
-                <input type="radio" id="takeaway_covid19_only" name="takeaway_covid19" value='only'>
-                <label for="takeaway_covid19_only" data-i18n="step2.only"></label>
-              </div>          
-            </div>
-          </div>
-            <!-- takeaway covid19 -->
-            <div class="form-group col-sm-6">
-              <span class="badge badge-danger">COVID-19</span> <label for='takeaway_covid19Description'
-                data-i18n="step2.service_covid_opening_label"></label>
-              <input id='takeaway_covid19Description' type='text' placeholder='' class="form-control"
-                data-i18n="[placeholder]step2.service_openingplaceholder" />
-            </div>
-          </div>
+          </div>          
       </div>
 
         <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase font-weight-bold font-monospace" id='collect-data-done'
