@@ -1,4 +1,6 @@
-const lngs = {
+let successString, manualPosition, loadingText, modalText;
+
+const availableLanguages = {
     'en-GB': { nativeName: 'English (GB)' },
     'en-US': { nativeName: 'English (US)' },
     de: { nativeName: 'Deutsch' },
@@ -57,8 +59,8 @@ $(function () {
             jqueryI18next.init(i18next, $);
 
             // fill language switcher
-            Object.keys(lngs).map((lng) => {
-                const opt = new Option(lngs[lng].nativeName, lng);
+            Object.keys(availableLanguages).map((lng) => {
+                const opt = new Option(availableLanguages[lng].nativeName, lng);
                 if (lng === i18next.resolvedLanguage) {
                     opt.setAttribute("selected", "selected");
                 }

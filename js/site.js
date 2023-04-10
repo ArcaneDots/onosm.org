@@ -1,8 +1,9 @@
 
 //jquery version exposes i18next object for translations
-var i18n = i18next;
+const i18n = i18next;
 
-var successString, manualPosition, loadingText, modalText;
+let category_data = [];
+let payment_data = [];
 
 /**
  * Reload translations for main content
@@ -83,7 +84,7 @@ $(window).on('hashchange', function () {
     $('#step2').removeClass('active bg-success');
     $('#step3').removeClass('active bg-success');
   }
-  findme_map.invalidateSize();
+  poiMap.invalidateSize();
 });
 
 // Disables the input if delivery is not checked
@@ -145,7 +146,7 @@ $("#collect-data-done").click(function () {
 
   location.hash = '#done';
 
-  var latlon = findme_marker.getLatLng(),
+  var latlon = poiMarker.getLatLng(),
     qwarg = {
       lat: latlon.lat,
       lon: latlon.lng,
