@@ -64,7 +64,7 @@ function reloadLists(language) {
 /**
  * Performs screen transitions when hash changes
  */
-$(window).on('hashchange', function () {
+$(window).on('hashchange', () => {
   if (location.hash == '#details') {
     $('#collect-data-step').removeClass('d-none');
     $('#address-step').addClass('d-none');
@@ -124,7 +124,7 @@ $('input[type=radio][name=takeaway-state]').on('change', function () {
     }
     case 'only': { 
       $("#takeaway_description").removeAttr("disabled");
-      $("input:radio[name=delivery-state]").prop('checked', false);;
+      $("input:radio[name=delivery-state]").prop('checked', false);
       $("input:radio[name=delivery-state]").attr("disabled", true);
       $("#delivery_description").attr("disabled", true);
       break;
@@ -137,8 +137,8 @@ $('input[type=radio][name=takeaway-state]').on('change', function () {
  * @returns note data structure
  */
 function getNoteBody() {
-  var paymentIds = [],
-    paymentTexts = [];
+  const paymentIds = [];
+  const paymentTexts = [];
   $.each($("#payment").select2("data"), function (_, e) {
     paymentIds.push(e.id);
     paymentTexts.push(e.text);
@@ -167,7 +167,7 @@ function getNoteBody() {
     const deliveryDescription = $("#delivery_description").val()
 
     note_body += "delivery=" + deliveryValue + '\n';
-    if (deliveryDescription.length > 0) note_body += "delivery:description=" + deliveryDescription + '\n';
+    if (deliveryDescription.length > 0) note_body += `delivery:description=${deliveryDescription}\n`;
   }
 
   if ($("input:radio[name=takeaway-state]").is(':checked')) {
@@ -175,7 +175,7 @@ function getNoteBody() {
     const takeawayDescription = $("#takeaway_description").val()
 
     note_body += "takeaway=" + takeawayValue + '\n';
-    if (takeawayDescription.length > 0) note_body += "takeaway:description=" + takeawayDescription + '\n';
+    if (takeawayDescription.length > 0) note_body += `takeaway:description=${takeawayDescription}\n`;
   }
   
   return note_body;
@@ -184,22 +184,22 @@ function getNoteBody() {
 /**
  * Posts Business information to OSM via Note api
  */
-$("#collect-data-done").click(function () {
+$("#collect-data-done").click(() => {
 
   location.hash = '#done';
 
-  var latlon = poiMarker.getLatLng(),
-    qwarg = {
-      lat: latlon.lat,
-      lon: latlon.lng,
-      text: getNoteBody()
-    };
+  const poiLatLon = poiMarker.getLatLng();
+  const qwArg = {
+    lat: poiLatLon.lat,
+    lon: poiLatLon.lng,
+    text: getNoteBody()
+  };
 
-  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwarg, function (data) {
+  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwArg, (data) => {
     // console.log(data);
-    var noteId = data.properties.id;
-    var link = 'https://openstreetmap.org/?note=' + noteId + '#map=19/' + latlon.lat + '/' + latlon.lng + '&layers=N';
-    $("#linkcoords").append('<div class="mt-3 h4"><a href="' + link + '">' + link + '</a></div>');
+    const noteId = data.properties.id;
+    const link = `https://openstreetmap.org/?note=${noteId}#map=19/${poiLatLon.lat}/${poiLatLon.lng}&layers=N`;
+    $("#linkcoords").append(`<div class="mt-3 h4"><a href="${link}">${link}</a></div>`);
   });
 });
 
@@ -211,7 +211,6 @@ function clearFields() {
   $("#address").val("");
   $("#category").select2("val", "");
   $("#payment").select2("val", "");
-  $('#delivery-check').val("");
-  $('#delivery-check').prop('indeterminate', true);
-  disableDelivery();
+  $('#input:radio[name=delivery-state]').prop('checked', false);
+  $('#input:radio[name=takeaway-state]').prop('checked', false);  
 }
