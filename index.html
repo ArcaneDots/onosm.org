@@ -258,103 +258,58 @@
 
         <div class="row">
           <div class="form-group col">
-            <label for='delivery' data-i18n="step2.delivery"></label>
-            <div class="input-group">
-            <div class="input-group-prepend">
-   <div class="input-group-text">
-     <div class="custom-control custom-checkbox">
-  <input type="checkbox" class="custom-control-input" id="delivery-check" name="delivery-check">
-
-       <label for="delivery-check" id="label-delivery-check" class="custom-control-label mb-0 ml-2" data-i18n="step2.no"></label>
-</div>
-   </div>
- </div>
-            <input id='delivery' type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.deliveryplaceholder" />
-          </div>
-        </div>
-          <div class="form-group col-sm-6">
-            <label for='delivery_description' data-i18n="step2.delivery_description"></label>
-            <input id='delivery_description' type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.delivery_descriptionplaceholder" />
-          </div>
-        </div>
-
-
-        <!-- delivery_covid -->
-        <div class="row mt-2">
-          <div class="form-group col">
-            <span class="badge badge-danger">COVID-19</span> <label data-i18n="step2.delivery_covid"></label>
-            <div class=" form-check-inline">
+            <label data-i18n="step2.delivery"></label>
+            <div class=" form-check-inline w-100">
               <div class="custom-control custom-radio">
-                <input type="radio" id="yes-covid19" name="delivery_covid" class="custom-control-input form-check-input" value='Y'>
-                <label class="custom-control-label form-check-label" for="yes-covid19" data-i18n="step2.yes"></label>
+                <input type="radio" id="yes-delivery" name="delivery-state" class="custom-control-input form-check-input" value='yes'>
+                <label class="custom-control-label form-check-label" for="yes-delivery" data-i18n="step2.yes"></label>
               </div>
               <div class="custom-control custom-radio">
-                <input type="radio" id="no-covid19" name="delivery_covid" class="custom-control-input form-check-input" value='N'>
-                <label class="custom-control-label form-check-label" for="no-covid19" data-i18n="step2.no"></label>
+                <input type="radio" id="no-delivery" name="delivery-state" class="custom-control-input form-check-input" value='no'>
+                <label class="custom-control-label form-check-label" for="no-delivery" data-i18n="step2.no"></label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input type="radio" id="only-delivery" name="delivery-state" class="custom-control-input form-check-input" value='only'>
+                <label class="custom-control-label form-check-label" for="only-delivery" data-i18n="step2.only"></label>
               </div>
             </div>
           </div>
-          <!-- delivery_covid -->
           <div class="form-group col-sm-6">
-            <span class="badge badge-danger">COVID-19</span> <label for='delivery_covid_description' data-i18n="step2.delivery_covid_description"></label>
-            <input id='delivery_covid_description' type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.delivery_covid_descriptionplaceholder" />
+            <label for='delivery_description' data-i18n="step2.delivery_description"></label>
+            <input id='delivery_description' type='text' placeholder='' class="form-control"
+              data-i18n="[placeholder]step2.delivery_descriptionplaceholder" />
           </div>
         </div>
-
+        
+        
         <hr class="my-3">
         <!-- takeaway -->
-
+        
         <div class="row">
           <div class="form-group col">
             <label data-i18n="step2.takeaway"></label>
             <div class=" form-check-inline w-100">
               <div class="custom-control custom-radio">
-                <input type="radio" id="yes-takeaway" name="takeaway" class="custom-control-input form-check-input" value='yes'>
+                <input type="radio" id="yes-takeaway" name="takeaway-state" class="custom-control-input form-check-input" value='yes'>
                 <label class="custom-control-label form-check-label" for="yes-takeaway" data-i18n="step2.yes"></label>
               </div>
               <div class="custom-control custom-radio">
-                <input type="radio" id="no-takeaway" name="takeaway" class="custom-control-input form-check-input" value='no'>
+                <input type="radio" id="no-takeaway" name="takeaway-state" class="custom-control-input form-check-input" value='no'>
                 <label class="custom-control-label form-check-label" for="no-takeaway" data-i18n="step2.no"></label>
               </div>
               <div class="custom-control custom-radio">
-                <input type="radio" id="only-takeaway" name="takeaway" class="custom-control-input form-check-input" value='only'>
-                <label class="custom-control-label form-check-label" for="only-takeaway" data-i18n="step2.only_takeaway"></label>
+                <input type="radio" id="only-takeaway" name="takeaway-state" class="custom-control-input form-check-input" value='only'>
+                <label class="custom-control-label form-check-label" for="only-takeaway" data-i18n="step2.only"></label>
               </div>
             </div>
           </div>
           <div class="form-group col-sm-6">
             <label for='takeaway_description' data-i18n="step2.takeaway_description"></label>
-            <input id='takeaway_description' type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.takeaway_descriptionplaceholder" />
+            <input id='takeaway_description' type='text' placeholder='' class="form-control"
+              data-i18n="[placeholder]step2.takeaway_descriptionplaceholder" />
           </div>
         </div>
-
-
-        <!-- takeaway_covid -->
-        <div class="row mt-2">
-          <div class="form-group col">
-            <span class="badge badge-danger">COVID-19</span> <label data-i18n="step2.takeaway_covid"></label>
-            <div class=" form-check-inline">
-              <div class="custom-control custom-radio">
-                <input type="radio" id="yes-takeaway-covid19" name="takeaway_covid" class="custom-control-input form-check-input" value='yes'>
-                <label class="custom-control-label form-check-label" for="yes-takeaway-covid19" data-i18n="step2.yes"></label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" id="no-takeaway-covid19" name="takeaway_covid" class="custom-control-input form-check-input" value='no'>
-                <label class="custom-control-label form-check-label" for="no-takeaway-covid19" data-i18n="step2.no"></label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" id="only-takeaway-covid19" name="takeaway_covid" class="custom-control-input form-check-input" value='only'>
-                <label class="custom-control-label form-check-label" for="only-takeaway-covid19" data-i18n="step2.only_takeaway"></label>
-              </div>
-            </div>
-          </div>
-          <!-- takeaway_covid -->
-          <div class="form-group col-sm-6">
-            <span class="badge badge-danger">COVID-19</span> <label for='takeaway_covid_description' data-i18n="step2.takeaway_covid_description"></label>
-            <input id='takeaway_covid_description' type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.takeaway_covid_descriptionplaceholder" />
-          </div>
-        </div>
-
+       
         <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase" id='collect-data-done' data-i18n="step2.done"></button>
       </form>
     </div>

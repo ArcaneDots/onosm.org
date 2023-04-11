@@ -87,13 +87,50 @@ $(window).on('hashchange', function () {
   poiMap.invalidateSize();
 });
 
-// Disables the input if delivery is not checked
-$('#delivery-check').prop('indeterminate', true);
-$(function () { deliveryCheck(); $("#delivery-check").click(deliveryCheck); });
-function deliveryCheck() { if (this.checked) { enableDelivery(); } else { disableDelivery(); } }
+//$("#delivery-check").on('click', function (){
+$('input[type=radio][name=delivery-state]').on('change', function () {
+  switch ($(this).val()) {
+    case 'no': {       
+      $("#delivery_description").attr("disabled", true);
+      $("input:radio[name=takeaway-state]").removeAttr("disabled");
+      break;
+    }
+    case 'yes': {       
+      $("#delivery_description").removeAttr("disabled");
+      $("input:radio[name=takeaway-state]").removeAttr("disabled");
+      break;
+    }
+    case 'only': { 
+      $("#delivery_description").removeAttr("disabled");
+      $("input:radio[name=takeaway-state]").prop('checked', false);;
+      $("input:radio[name=takeaway-state]").attr("disabled", true);
+      $("#takeaway_description").attr("disabled", true);
+      break;
+    }
+  }
+});
 
-function disableDelivery() { $("#delivery").attr("disabled", true); $("#delivery_description").attr("disabled", true); $("#label-delivery-check").html(i18n.t('step2.no')); }
-function enableDelivery() { $("#delivery").removeAttr("disabled"); $("#delivery_description").removeAttr("disabled"); $("#label-delivery-check").html(i18n.t('step2.yes')); }
+$('input[type=radio][name=takeaway-state]').on('change', function () {
+  switch (this.value) {
+    case 'no': {       
+      $("#takeaway_description").attr("disabled", true);
+      $("input:radio[name=delivery-state]").removeAttr("disabled");
+      break;
+    }
+    case 'yes': {       
+      $("#takeaway_description").removeAttr("disabled");
+      $("input:radio[name=delivery-state]").removeAttr("disabled");
+      break;
+    }
+    case 'only': { 
+      $("#takeaway_description").removeAttr("disabled");
+      $("input:radio[name=delivery-state]").prop('checked', false);;
+      $("input:radio[name=delivery-state]").attr("disabled", true);
+      $("#delivery_description").attr("disabled", true);
+      break;
+    }
+  }
+});
 
 /**
  * Collect information for final OSM Note.
@@ -109,7 +146,7 @@ function getNoteBody() {
 
   // add back translation of note header
   
-  var note_body = "onosm.org submitted note from a business:\n";
+  let note_body = "onosm.org submitted note from a business:\n";
   if ($("#name").val()) note_body += i18n.t('step2.name') + ": " + $("#name").val() + "\n";
   if ($("#hnumberalt").val()) note_body += "addr:housenumber=" + $("#hnumberalt").val() + "\n";
   if ($("#addressalt").val()) note_body += "addr:street=" + $("#addressalt").val() + "\n";
@@ -124,18 +161,23 @@ function getNoteBody() {
   if ($("#category").val()) note_body += i18n.t('step2.catlabel') + ": " + $("#category").val() + "\n";
   if ($("#categoryalt").val()) note_body += i18n.t('step2.cataltdesc') + ": " + $("#categoryalt").val() + "\n";
   if (paymentIds) note_body += i18n.t('step2.payment') + ": " + paymentTexts.join(",") + "\n";
- 
-  if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() != "") note_body += " delivery=" + $("#delivery").val() + "\n"; else if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() == "") note_body += "delivery=yes" + "\n"; else if ($('#delivery-check').not(':indeterminate') == true) note_body += "delivery=no" + "\n";
-  if ($("#delivery_description").val()) note_body += "delivery:description=" + $("#delivery_description").val() + "\n";
- 
-  if ($("input:checked[name=takeaway]").val() != "undefined") note_body += "takeaway=" + $("input:checked[name=takeaway]").val() + "\n";
-  if ($("#takeaway_description").val()) note_body += "takeaway:description=" + $("#takeaway_description").val() + "\n";
-  if ($("input:checked[name=takeaway_covid]").val() == "yes" || $("input:checked[name=takeaway_covid]").val() == "only") note_body += "takeaway:covid19=" + $("input:checked[name=takeaway_covid]").val() + "\n";
- 
-  if ($("input:checked[name=delivery_covid]").val() === 'Y') note_body += "delivery:covid19=yes\n";
-  if ($("#delivery_covid_description").val() || $("#takeaway_covid_description").val()) note_body += "description:covid19=";
-  if ($("#delivery_covid_description").val()) note_body += $("#delivery_covid_description").val() + " ";
-  if ($("#takeaway_covid_description").val()) note_body += $("#takeaway_covid_description").val() + "\n";
+  
+  if ($("input:radio[name=delivery-state]").is(':checked')) {
+    const deliveryValue = $("input:radio[name=delivery-state]:checked").val();
+    const deliveryDescription = $("#delivery_description").val()
+
+    note_body += "delivery=" + deliveryValue + '\n';
+    if (deliveryDescription.length > 0) note_body += "delivery:description=" + deliveryDescription + '\n';
+  }
+
+  if ($("input:radio[name=takeaway-state]").is(':checked')) {
+    const takeawayValue = $("input:radio[name=takeaway-state]:checked").val();
+    const takeawayDescription = $("#takeaway_description").val()
+
+    note_body += "takeaway=" + takeawayValue + '\n';
+    if (takeawayDescription.length > 0) note_body += "takeaway:description=" + takeawayDescription + '\n';
+  }
+  
   return note_body;
 }
 
