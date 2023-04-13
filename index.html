@@ -24,7 +24,8 @@
 
   <!-- BOOTSTRAP CSS -->
   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
   <!-- TWEMOJI Amazing -->
   <link rel="stylesheet" href="css/twemoji.css" />
@@ -38,17 +39,13 @@
   <![endif]-->
 
   <!-- LEAFLET  JS-->
-  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-    crossorigin=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js" integrity="sha512-Dqm3h1Y4qiHUjbhxTuBGQsza0Tfppn53SHlu/uj1f+RT+xfShfe7r6czRf5r2NmllO2aKx+tYJgoxboOkn1Scg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="js/L.Control.Locate.js"></script>
 
   <!-- JQUERY  JS-->
   <script src="https://code.jquery.com/jquery-3.6.3.min.js"
     integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-  <!-- <script src="https://code.jquery.com/jquery-3.5.0.min.js"
-    integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script> -->
-    
+
   <script src="https://code.jquery.com/jquery-migrate-3.2.0.min.js"
     integrity="sha256-t+8cuBH4205MYRAyzzsk0sEla/l5QSO0GuTeozHrVNY=" crossorigin="anonymous"></script>
 
@@ -116,8 +113,8 @@
         <p id="map-information" class="alert alert-warning mt-2" role="alert" style='display: none;'></p>
       </div>
       <div id='findme-map'></div>
-      <a class="btn btn-primary btn-lg w-100 mt-3 text-uppercase font-weight-bold font-monospace disabled" id="continue" href="#details"
-        data-i18n="step1.continue">
+      <a class="btn btn-primary btn-lg w-100 mt-3 text-uppercase font-weight-bold font-monospace disabled" id="continue"
+        href="#details" data-i18n="step1.continue">
         Move to next step
       </a>
     </div>
@@ -303,14 +300,17 @@
             <label id="drive-thru_section_label" data-i18n="step2.drive-thrudesc">Takeaway Label</label>
           </div>
           <div class="form-group col-sm-4" role="radiogroup" aria-labelledby="drive-thru_section_label">
-            <fieldset>                
-              <input type="radio" name="drive-thru_state" id="drive-thru_state_no" class="osm_section_option" checked>
+            <fieldset>
+              <input type="radio" name="drive-thru_state" id="drive-thru_state_no" class="osm_section_option"
+                value='on'>
               <label for="drive-thru_state_no" data-i18n="step2.no">no</label>
 
-              <input type="radio" name="drive-thru_state" id="drive-thru_state_yes" class="osm_section_option">
+              <input type="radio" name="drive-thru_state" id="drive-thru_state_yes" class="osm_section_option"
+                value='yes'>
               <label for="drive-thru_state_yes" data-i18n="step2.yes">yes</label>
-        
-              <input type="radio" name="drive-thru_state" id="drive-thru_state_only" class="osm_section_option">
+
+              <input type="radio" name="drive-thru_state" id="drive-thru_state_only" class="osm_section_option"
+                value='only'>
               <label for="drive-thru_state_only" data-i18n="step2.only">only</label>
             </fieldset>
           </div>
@@ -340,7 +340,7 @@
             </div>
           </div>
         </div>
-        
+
         <hr class="my-3">
 
         <!-- delivery toggle-->
@@ -349,14 +349,15 @@
             <label id="delivery_section_label" data-i18n="step2.deliverydesc">Takeaway Label</label>
           </div>
           <div class="form-group col-sm-4" role="radiogroup" aria-labelledby="delivery_section_label">
-            <fieldset>                
-              <input type="radio" name="delivery_state" id="delivery_state_no" class="osm_section_option" checked>
+            <fieldset>
+              <input type="radio" name="delivery_state" id="delivery_state_no" class="osm_section_option" value='no'>
               <label for="delivery_state_no" data-i18n="step2.no">no</label>
 
-              <input type="radio" name="delivery_state" id="delivery_state_yes" class="osm_section_option">
+              <input type="radio" name="delivery_state" id="delivery_state_yes" class="osm_section_option" value='yes'>
               <label for="delivery_state_yes" data-i18n="step2.yes">yes</label>
-        
-              <input type="radio" name="delivery_state" id="delivery_state_only" class="osm_section_option">
+
+              <input type="radio" name="delivery_state" id="delivery_state_only" class="osm_section_option"
+                value='only'>
               <label for="delivery_state_only" data-i18n="step2.only">only</label>
             </fieldset>
           </div>
@@ -368,7 +369,7 @@
             </button>
           </div>
         </div>
-        
+
         <!-- delivery section -->
         <div class="collapse " id="deliverySection">
           <div class="row">
@@ -386,7 +387,7 @@
             </div>
           </div>
         </div>
-        
+
         <hr class="my-3">
 
         <!-- takeaway toggle -->
@@ -395,15 +396,16 @@
             <label id="takeaway-label" data-i18n="step2.takeawaydesc">Takeaway Label</label>
           </div>
           <div class="form-group col-sm-4" role="radiogroup" aria-labelledby="takeaway-label">
-            <fieldset>        
-              <input type="radio" name="takeaway_State" id="takeaway_State_no" class="osm_section_option" checked>
-              <label for="takeaway_State_no" data-i18n="step2.no">no</label>
+            <fieldset>
+              <input type="radio" name="takeaway_state" id="takeaway_state_no" class="osm_section_option" value='no'>
+              <label for="takeaway_state_no" data-i18n="step2.no">no</label>
 
-              <input type="radio" name="takeaway_State" id="takeaway_State_yes" class="osm_section_option">
-              <label for="takeaway_State_yes" data-i18n="step2.yes">yes</label>
-        
-              <input type="radio" name="takeaway_State" id="takeaway_State_only" class="osm_section_option">
-              <label for="takeaway_State_only" data-i18n="step2.only">only</label>
+              <input type="radio" name="takeaway_state" id="takeaway_state_yes" class="osm_section_option" value='yes'>
+              <label for="takeaway_state_yes" data-i18n="step2.yes">yes</label>
+
+              <input type="radio" name="takeaway_state" id="takeaway_state_only" class="osm_section_option"
+                value='only'>
+              <label for="takeaway_state_only" data-i18n="step2.only">only</label>
             </fieldset>
           </div>
           <div class="form-group col-sm-1">
@@ -414,7 +416,7 @@
             </button>
           </div>
         </div>
-        
+
         <!-- takeaway section -->
         <div class="collapse" id="takeawaySection">
           <div class="row">
@@ -424,18 +426,18 @@
               <input id='takeaway_hours' type='text' placeholder='' class="form-control"
                 data-i18n="[placeholder]step2.service_openingplaceholder" />
             </div>
-        
+
             <!-- takeaway description -->
             <div class="form-group col-sm-6">
               <label for='takeaway_description' data-i18n="step2.service_description"></label>
               <input id='takeaway_description' type='text' placeholder='' class="form-control"
                 data-i18n="[placeholder]step2.takeaway_descriptionplaceholder" />
             </div>
-          </div>          
-      </div>
+          </div>
+        </div>
 
-        <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase font-weight-bold font-monospace" id='collect-data-done'
-          data-i18n="step2.done">done</button>
+        <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase font-weight-bold font-monospace"
+          id='collect-data-done' data-i18n="step2.done">done</button>
       </form>
     </div>
 
@@ -448,12 +450,16 @@
 
       <div data-i18n="[html]step3.finalmessage"></div>
     </div>
+
     <p class="font-weight-bold font-monospace small mt-4" data-i18n="[html]messages.credits"></p>
   </div>
-  <script src="js/i18n.js"></script>
-  <script src="js/site_scripts/add_leaflet.js"></script>
-  <script src="js/site_scripts/interfaces.js"></script>
-  <script src="js/site.js"></script>
+  <script src="js/user_scripts/i18n.js"></script>
+  <script src="js/user_scripts/html_methods.js"></script>
+  <script src="js/user_scripts/map_datatypes.js"></script>
+  <script src="js/user_scripts/map_methods.js"></script>
+  <script src="js/user_scripts/map_events.js"></script>
+  <script src='js/site.js'></script>
+
 </body>
 
 </html>

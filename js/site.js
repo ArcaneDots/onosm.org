@@ -1,81 +1,186 @@
 
 //jquery version exposes i18next object for translations
-var i18n = i18next;
+const i18n = i18next;
 
-let successString, manualPosition, loadingText, modalText;
+/**
+ * Reload translations for main content
+ * @param {*} language 
+ */
+function reloadLists(language) {
+  const category_data = [];
+  const payment_data = [];
 
-const driveThruService = ServiceData('drive_through');
-const deliveryService = ServiceData('delivery');
-const takeawayService = ServiceData('takeaway');
+  $.getJSON(`./locales/${language}/categories.json`)
+    .success((data) => {
+      category_data = data;
+    })
+    .fail(function () {
+      // 404? Fall back to en-US
+      $.getJSON('./locales/en-US/categories.json')
+        .success((data) => {
+          category_data = data;
+        });
+    });
 
-const serviceList = [driveThruService, deliveryService, takeawayService];
+  $.getJSON(`./locales/${language}/payment.json`).success((data) => {
+    payment_data = data;
+  });
 
-const services = ServicesMap();
-services.add('drive-thru', driveThruService);
-services.add('delivery', deliveryService);
-services.add('takeaway', takeawayService);
-
-
-// Disables the input if delivery is not checked
-$('#delivery_state').prop('indeterminate', true);
-
-// top-level services radio button click handler
-$('.osm_section_option').on('click', function () {
-  // source: https://stackoverflow.com/questions/33155382/toggle-radio-buttons-checked-status-in-jquery
-
-  // jquery tag
-  const selectedOptionId = this.id;  
-  const selectedData = UserSelectionData(selectedOptionId, selectedOptionId.value);
-  console.info(selectedOptionId);
-
-  //use: if (id.contains('only')) <- use with ES6 and above
-
-  // turn off other radio buttons where user clicks "only" option
-  if (selectedData.value === RadioTypes.TYPE_ONLY) {
-
-    // disable other checked radio-button in top-level group 
-    const otherSelectedOptions = $('[class=osm_section_option]').not(`[name=${this.name}]`);
-    SectionHandler(otherSelectedOptions, serviceList)
-    .collapseAllSections();
-
-  } else {
-    // reenable previously disabled main service options
-    const otherSectionOptions = $('[class=osm_section_option]:disabled').not('[name=' + this.name + ']');
-    
-    if (otherSectionOptions.length > 0) {
-      SectionHandler(otherSectionOptions, serviceList)
-      .enableAllSections();
+  $('#category').children().remove().end();
+  $("#category").select2({
+    query: function (query) {
+      var data = {
+        results: []
+      },
+        i;
+      for (i = 0; i < category_data.length; i++) {
+        if (query.term.length === 0 || category_data[i].toLowerCase().indexOf(query.term.toLowerCase()) >= 0) {
+          data.results.push({
+            id: category_data[i],
+            text: category_data[i]
+          });
+        }
+      }
+      query.callback(data);
     }
+  });
+
+  $('#payment').children().remove().end();
+  $("#payment").select2({
+    multiple: true,
+    query: function (query) {
+      var data = {
+        results: []
+      };
+      data.results = payment_data;
+      query.callback(data);
+    }
+  });
+};
+
+/**
+ * Performs screen transitions when hash changes
+ */
+$(window).on('hashchange', () => {
+  if (location.hash == '#details') {
+    $('#collect-data-step').removeClass('d-none');
+    $('#address-step').addClass('d-none');
+    $('#confirm-step').addClass('d-none');
+    $('#step2').addClass('active bg-success');
+    $('#step3').removeClass('active bg-success');
+  } else if (location.hash == '#done') {
+    $('#confirm-step').removeClass('d-none');
+    $('#collect-data-step').addClass('d-none');
+    $('#address-step').addClass('d-none');
+    $('#step3').addClass('active bg-success');
+    //confetti.start(1000);
+  } else {
+    $('#address-step').removeClass('d-none');
+    $('#collect-data-step').addClass('d-none');
+    $('#confirm-step').addClass('d-none');
+    $('#step2').removeClass('active bg-success');
+    $('#step3').removeClass('active bg-success');
   }
-
-  // update "checked" attribute??
-  $(`:radio[name=${this.name}]`).not(selectedOptionId).data('checked', false);
-
-  // update the section's 'service' based on checked option 
-  const sectionName = selectedData.sectionName();
-  const optionValue = selectedData.value.get();
-  affectedService = services.get(sectionName);
-  affectedService.setValue(optionValue);
-
-  //log final state change
-  let element = services.iterator.next();
-  while (!element.done) {
-    console.info(element.value.name + ': ' + element.value.ServiceData.getValue());
-    element = services.iterator.next();
-  }
+  poiMap.invalidateSize();
 });
 
+// services radio buttons
+
+$('input[type=radio][name=drive-thru_state]').on('change', function () {
+  radioSelector(this);
+});
+
+$('input[type=radio][name=delivery_state]').on('change', function () {
+  radioSelector(this);
+});
+
+$('input[type=radio][name=takeaway_state]').on('change', function () {
+  radioSelector(this);
+});
+
+
+function radioSelector(radioCollectionValue) {
+  const localId = radioCollectionValue.id;
+  const parts = localId.split('_');
+  const currentSection = parts[0];
+  const radioValue = (parts.length > 2) ? parts[2] : radioCollectionValue.val().toLowerCase();
+
+  const otherSelectOptions = $('[class=osm_section_option]').not('[name=' + radioCollectionValue.name + ']');
+
+  const otherSectionList = [];
+  otherSelectOptions.each(function (index, element) {
+    const parts = element.name.split('_');
+    const currentName = parts[0];
+    if (!otherSectionList.find(nameElement => nameElement === currentName)) {
+      otherSectionList.push(currentName);
+    }
+  });
+
+  switch (radioValue) {
+    case 'no': {
+      radioChildrenOff(currentSection);
+      otherSelectOptions.removeAttr('disabled');
+
+      for (i = 0; i < otherSectionList; i++) {
+        toggleOn(otherSectionList[i]);
+      }
+      break;
+    }
+    case 'yes': {
+      radioChildrenOn(currentSection);
+      otherSelectOptions.removeAttr('disabled');
+
+      for (i = 0; i < otherSectionList.length; i++) {
+        toggleOn(otherSectionList[i]);
+      }
+      break;
+    }
+    case 'only': {
+      radioChildrenOn(currentSection);
+      otherSelectOptions.attr('disabled', 'true');
+
+      for (i = 0; i < otherSectionList.length; i++) {
+        toggleOff(otherSectionList[i])
+      }
+      break;
+    }
+  }
+};
+
+function radioChildrenOn(sectionName) {
+  $("#" + sectionName + "_description").removeAttr("disabled");
+  $("#" + sectionName + "_hours").removeAttr("disabled");
+}
+
+function radioChildrenOff(sectionName) {
+  $("#" + sectionName + "_description").attr("disabled", true);
+  $("#" + sectionName + "_hours").attr("disabled", true);
+}
+
+function toggleOn(sectionName) {
+  $("#" + sectionName + "Toggle").removeAttr("disabled");
+}
+
+function toggleOff(sectionName) {
+  $("#" + sectionName + "Toggle").attr("disabled", true);
+}
+
+
+/**
+ * Collect information for final OSM Note.
+ * @returns note data structure
+ */
 function getNoteBody() {
-  var paymentIds = [],
-    paymentTexts = [];
+  const paymentIds = [];
+  const paymentTexts = [];
   $.each($("#payment").select2("data"), function (_, e) {
     paymentIds.push(e.id);
     paymentTexts.push(e.text);
   });
 
   // add back translation of note header
-  
-  var note_body = "onosm.org submitted note from a business:\n";
+
+  let note_body = "onosm.org submitted note from a business:\n";
   if ($("#name").val()) note_body += i18n.t('step2.name') + ": " + $("#name").val() + "\n";
   if ($("#hnumberalt").val()) note_body += "addr:housenumber=" + $("#hnumberalt").val() + "\n";
   if ($("#addressalt").val()) note_body += "addr:street=" + $("#addressalt").val() + "\n";
@@ -90,68 +195,56 @@ function getNoteBody() {
   if ($("#category").val()) note_body += i18n.t('step2.catlabel') + ": " + $("#category").val() + "\n";
   if ($("#categoryalt").val()) note_body += i18n.t('step2.cataltdesc') + ": " + $("#categoryalt").val() + "\n";
   if (paymentIds) note_body += i18n.t('step2.payment') + ": " + paymentTexts.join(",") + "\n";
- 
 
+  if ($("input:radio[name=delivery-state]").is(':checked')) {
+    const deliveryValue = $("input:radio[name=delivery-state]:checked").val();
+    const deliveryDescription = $("#delivery_description").val()
 
-  // Delivery
-  // if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() != "") 
-  //   note_body += " delivery=" + $("#delivery").val() + "\n"; 
-  //   else if ($("input:checked[name=delivery-check]").val() && $("#delivery").val() == "") 
-  //   note_body += "delivery=yes" + "\n"; 
-  //   else if ($('#delivery-check').not(':indeterminate') == true) 
-  //   note_body += "delivery=no" + "\n";
+    note_body += `delivery=${deliveryValue}\n`;
+    if (deliveryDescription.length > 0) note_body += `delivery:description=${deliveryDescription}\n`;
+  }
 
-  // services.forEach(element => {if element
-    
-  // });
+  if ($("input:radio[name=takeaway-state]").is(':checked')) {
+    const takeawayValue = $("input:radio[name=takeaway-state]:checked").val();
+    const takeawayDescription = $("#takeaway_description").val()
 
-  // if ($("#delivery_description").val()) note_body += "delivery:description=" + $("#delivery_description").val() + "\n";
-  // // Delivery during covid
-  // if ($("input:checked[name=delivery_covid]").val() === 'Y') note_body += "delivery:covid19=yes\n";
-  // if ($("#delivery_covid_description").val() || $("#takeaway_covid_description").val()) 
-  //   note_body += "description:covid19=";
-  // if ($("#delivery_covid_description").val()) note_body += $("#delivery_covid_description").val() + " ";
-  
-  // // Take-away
-  // if ($("input:checked[name=takeaway-check]").val() != "undefined") note_body += "takeaway=" + $("input:checked[name=takeaway]").val() + "\n";  
-  // if ($("#takeaway_description").val()) note_body += "takeaway:description=" + $("#takeaway_description").val() + "\n";
-  // // Take-away during Covid-19
-  // if ($("input:checked[name=takeaway_covid]").val() == "yes" || $("input:checked[name=takeaway_covid]").val() == "only") 
-  //   note_body += "takeaway:covid19=" + $("input:checked[name=takeaway_covid]").val() + "\n"; 
-  // if ($("#takeaway_covid_description").val()) note_body += $("#takeaway_covid_description").val() + "\n";
+    note_body += `takeaway=${takeawayValue}\n`;
+    if (takeawayDescription.length > 0) note_body += `takeaway:description=${takeawayDescription}\n`;
+  }
 
-  // // drive-through
-  // if ($("input:checked[name=drive_through_yes]").val() != "undefined") note_body += "drive_through=" + $("input:checked[name=takeaway]").val() + "\n";  
-  // if ($("#takeaway_description").val()) note_body += "takeaway:description=" + $("#takeaway_description").val() + "\n";
-  // // drive-through during Covid-19
   return note_body;
 }
 
-$("#collect-data-done").click(function () {
+/**
+ * Posts Business information to OSM via Note api
+ */
+$("#collect-data-done").click(() => {
 
   location.hash = '#done';
 
-  var latlon = findme_marker.getLatLng(),
-    qwarg = {
-      lat: latlon.lat,
-      lon: latlon.lng,
-      text: getNoteBody()
-    };
+  const poiLatLon = poiMarker.getLatLng();
+  const qwArg = {
+    lat: poiLatLon.lat,
+    lon: poiLatLon.lng,
+    text: getNoteBody()
+  };
 
-  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwarg, function (data) {
+  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwArg, (data) => {
     // console.log(data);
-    var noteId = data.properties.id;
-    var link = 'https://openstreetmap.org/?note=' + noteId + '#map=19/' + latlon.lat + '/' + latlon.lng + '&layers=N';
-    $("#linkcoords").append('<div class="mt-3 h4"><a href="' + link + '">' + link + '</a></div>');
+    const noteId = data.properties.id;
+    const link = `https://openstreetmap.org/?note=${noteId}#map=19/${poiLatLon.lat}/${poiLatLon.lng}&layers=N`;
+    $("#linkcoords").append(`<div class="mt-3 h4"><a href="${link}">${link}</a></div>`);
   });
 });
 
+/**
+ * Resets main form data
+ */
 function clearFields() {
   $("#form")[0].reset();
   $("#address").val("");
   $("#category").select2("val", "");
   $("#payment").select2("val", "");
-  $('#delivery-check').val("");
-  $('#delivery-check').prop('indeterminate', true);
-  disableDelivery();
+  $('#input:radio[name=delivery-state]').prop('checked', false);
+  $('#input:radio[name=takeaway-state]').prop('checked', false);
 }
