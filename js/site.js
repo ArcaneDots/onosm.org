@@ -2,19 +2,23 @@
 //jquery version exposes i18next object for translations
 const i18n = i18next;
 
+let completedAddress = undefined;
+
+const userAddressForm = document.getElementById('formUserAddress');
+
 /**
  * Reload translations for main content
  * @param {*} language 
  */
 function reloadLists(language) {
-  const category_data = [];
-  const payment_data = [];
+  let category_data = [];
+  let payment_data = [];
 
   $.getJSON(`./locales/${language}/categories.json`)
     .success((data) => {
       category_data = data;
     })
-    .fail(function () {
+    .fail(() => {
       // 404? Fall back to en-US
       $.getJSON('./locales/en-US/categories.json')
         .success((data) => {
@@ -29,7 +33,7 @@ function reloadLists(language) {
   $('#category').children().remove().end();
   $("#category").select2({
     query: function (query) {
-      var data = {
+      let data = {
         results: []
       },
         i;
@@ -49,7 +53,7 @@ function reloadLists(language) {
   $("#payment").select2({
     multiple: true,
     query: function (query) {
-      var data = {
+      let data = {
         results: []
       };
       data.results = payment_data;
@@ -58,30 +62,50 @@ function reloadLists(language) {
   });
 };
 
-/**
- * Performs screen transitions when hash changes
- */
-$(window).on('hashchange', () => {
-  if (location.hash == '#details') {
-    $('#collect-data-step').removeClass('d-none');
-    $('#address-step').addClass('d-none');
-    $('#confirm-step').addClass('d-none');
-    $('#step2').addClass('active bg-success');
-    $('#step3').removeClass('active bg-success');
-  } else if (location.hash == '#done') {
-    $('#confirm-step').removeClass('d-none');
-    $('#collect-data-step').addClass('d-none');
-    $('#address-step').addClass('d-none');
-    $('#step3').addClass('active bg-success');
-    //confetti.start(1000);
-  } else {
-    $('#address-step').removeClass('d-none');
-    $('#collect-data-step').addClass('d-none');
-    $('#confirm-step').addClass('d-none');
-    $('#step2').removeClass('active bg-success');
-    $('#step3').removeClass('active bg-success');
+function verifyLocation(){
+  if (activeSearchAddress === null) {
+    return;
   }
+
+  location.hash = '#details';
+  $('#collect-data-step').removeClass('d-none');
+  $('#address-step').addClass('d-none');
+  $('#confirm-step').addClass('d-none');
+  $('#step2').addClass('active bg-success');
+  $('#step3').removeClass('active bg-success');
   poiMap.invalidateSize();
+}
+
+userAddressForm.addEventListener("submit", function (e){
+  e.preventDefault();
+
+  completedAddress = getNoteBody();
+
+  if (completedAddress === null) {
+    return;
+  }
+
+  var poiLatLon = poiMarker.getLatLng(),
+    qwArg = {
+      lat: poiLatLon.lat,
+      lon: poiLatLon.lng,
+      text: completedAddress
+    };
+
+  // map data dev site: https://master.apis.dev.openstreetmap.org/
+  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwArg, function (data) {
+    console.info(data);
+    const noteId = data.properties.id;
+    const link = 'https://openstreetmap.org/?note=' + noteId + '#map=19/' + poiLatLon.lat + '/' + poiLatLon.lng + '&layers=N';
+    $("#linkcoords").append('<div class="mt-3 h4"><a href="' + link + '">' + link + '</a></div>');
+  });
+
+  location.hash = '#done';
+  $('#confirm-step').removeClass('d-none');
+  $('#collect-data-step').addClass('d-none');
+  $('#address-step').addClass('d-none');
+  $('#step3').addClass('active bg-success');
+  //confetti.start(1000);
 });
 
 // services radio buttons
@@ -216,35 +240,29 @@ function getNoteBody() {
 }
 
 /**
- * Posts Business information to OSM via Note api
- */
-$("#collect-data-done").click(() => {
-
-  location.hash = '#done';
-
-  const poiLatLon = poiMarker.getLatLng();
-  const qwArg = {
-    lat: poiLatLon.lat,
-    lon: poiLatLon.lng,
-    text: getNoteBody()
-  };
-
-  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwArg, (data) => {
-    // console.log(data);
-    const noteId = data.properties.id;
-    const link = `https://openstreetmap.org/?note=${noteId}#map=19/${poiLatLon.lat}/${poiLatLon.lng}&layers=N`;
-    $("#linkcoords").append(`<div class="mt-3 h4"><a href="${link}">${link}</a></div>`);
-  });
-});
-
-/**
  * Resets main form data
  */
 function clearFields() {
-  $("#form")[0].reset();
+  $("#formUserAddress")[0].reset();
   $("#address").val("");
   $("#category").select2("val", "");
   $("#payment").select2("val", "");
+  $('#input:radio[name=drive-thru_state]').prop('checked', false);
   $('#input:radio[name=delivery-state]').prop('checked', false);
   $('#input:radio[name=takeaway-state]').prop('checked', false);
+}
+
+function returnToLocation(){
+
+  clearFields();
+
+  location.hash = '#location';
+
+  $('#address-step').removeClass('d-none');
+  $('#collect-data-step').addClass('d-none');
+  $('#confirm-step').addClass('d-none');
+  $('#step2').removeClass('active bg-success');
+  $('#step3').removeClass('active bg-success');
+
+  poiMap.invalidateSize();
 }

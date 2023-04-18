@@ -2,6 +2,7 @@
  * @type {NominatimAddress}
  */
 let activeSearchAddress = null;
+
 /**
  * @type {universalCoordinates}
  */
@@ -41,15 +42,13 @@ L.control.locate({
 let poiCircle = null;
 let poiRectangle = null;
 
-if (location.hash) location.hash = '';
-
 /**
  * user search event: action
  * @param {Object} submit event object
  * 
  * Use content of address_to_find input element as search terms
  */
-$("#find").submit((e) => {
+$("#formFindLocation").submit((e) => {
   e.preventDefault();
   hideHtmlAddressNotFoundMsg();
 
