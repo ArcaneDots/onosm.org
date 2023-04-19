@@ -220,20 +220,35 @@ function getNoteBody() {
   if ($("#categoryalt").val()) note_body += i18n.t('step2.cataltdesc') + ": " + $("#categoryalt").val() + "\n";
   if (paymentIds) note_body += i18n.t('step2.payment') + ": " + paymentTexts.join(",") + "\n";
 
-  if ($("input:radio[name=delivery-state]").is(':checked')) {
-    const deliveryValue = $("input:radio[name=delivery-state]:checked").val();
-    const deliveryDescription = $("#delivery_description").val()
+  
+  if ($('input[type=radio][name=drive-thru_state]').is(':checked')) {
+    const sectionValue = $("input[type=radio][name=drive-thru_state]:checked").val();
+    const sectionHours = $("#drive-thru_hours").val()
+    const sectionDescription = $("#drive-thru_description").val()
 
-    note_body += `delivery=${deliveryValue}\n`;
-    if (deliveryDescription.length > 0) note_body += `delivery:description=${deliveryDescription}\n`;
+    note_body += `drive_through=${sectionValue}\n`;
+    if (sectionHours.length > 0) note_body += `opening_hours:drive_through=${sectionHours}\n`;
+    if (sectionDescription.length > 0) note_body += `drive_through:description=${sectionDescription}\n`;
+  }
+  
+  if ($('input[type=radio][name=delivery_state]').is(':checked')) {
+    const sectionValue = $("input[type=radio][name=delivery_state]:checked").val();
+    const sectionHours = $("#delivery_hours").val()
+    const sectionDescription = $("#delivery_description").val()
+
+    note_body += `delivery=${sectionValue}\n`;
+    if (sectionHours.length > 0) note_body += `opening_hours:delivery=${sectionHours}\n`;
+    if (sectionDescription.length > 0) note_body += `delivery:description=${sectionDescription}\n`;
   }
 
-  if ($("input:radio[name=takeaway-state]").is(':checked')) {
-    const takeawayValue = $("input:radio[name=takeaway-state]:checked").val();
-    const takeawayDescription = $("#takeaway_description").val()
+  if ($("input[type=radio][name=takeaway-state]").is(':checked')) {
+    const sectionValue = $("input[type=radio][name=takeaway_state]:checked").val();
+    const sectionHours = $("#takeaway_hours").val()
+    const sectionDescription = $("#takeaway_description").val()
 
-    note_body += `takeaway=${takeawayValue}\n`;
-    if (takeawayDescription.length > 0) note_body += `takeaway:description=${takeawayDescription}\n`;
+    note_body += `takeaway=${sectionValue}\n`;
+    if (sectionHours.length > 0) note_body += `opening_hours:takeaway=${sectionHours}\n`;
+    if (sectionDescription.length > 0) note_body += `takeaway:description=${sectionDescription}\n`;
   }
 
   return note_body;
