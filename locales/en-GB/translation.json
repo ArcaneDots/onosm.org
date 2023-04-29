@@ -49,11 +49,13 @@
     "socialplaceholder": "@OpenStreetMap or https://www.facebook.com/OpenStreetMap",
     "payment": "Accepted payment methods",
     "paymentplaceholder": "Choose an option",
+    "driveThrudesc": "Drive Through",
+    "driveThru_descriptionplaceholder": "Minimum order £15 free shipping",    
     "delivery": "Is there a delivery service?",
     "deliveryplaceholder": "Yes/No/Mo-Fr 7pm to 9pm",
     "deliverydesc": "Delivery",
     "delivery_description": "Delivery service details",
-    "delivery_descriptionplaceholder": "Minimum order 15$ free shipping",
+    "delivery_descriptionplaceholder": "Minimum order £15 free shipping",
     "delivery_descriptiondesc": "Delivery description",
     "delivery_covid": "Is there a delivery service during COVID-19 emergency?",
     "delivery_covid_descriptionplaceholder": "Mo-Fr 7pm to 9pm",
@@ -82,11 +84,14 @@
   },
   "messages": {
     "success": "Found it! Click and drag the marker on your business place position, so you'll be ready to <a href='#details'>add more details.</a>",
-    "manualPosition": " You have activated the marker! Click and drag it on your business place position, so you'll be ready to <a href='#details'>add more details.</a>",
-    "loadingText": "Searching...",
     "modalButton": "Close",
     "modalTitle": "Wheelchair accessibility classification",
     "needsChecking": "needs checking",
     "credits": "An open source project developed by the worldwide <a href=\"https://www.openstreetmap.org/\" class=\"badge badge-info\">OpenStreetMap</a> community <i class=\"twa twa-globe-with-meridians\"></i>. Contribute to this project on <a href=\"https://github.com/osmlab/onosm.org\" class=\"badge badge-dark\">GitHub</a>."
+  },
+  "validation": {
+    "missingCategory": "Please select at least one category.",
+    "missingName": "Please enter a name.",
+    "missingPhoneOrWebsite": "Please enter a valid website or phone number."
   }
 }

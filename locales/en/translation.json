@@ -56,6 +56,8 @@
     "service_description": "Service details",
     "service_covid_label": "Service available during COVID-19 emergency?",
     "service_covid_opening_label": "Service hours during COVID-19 emergency",
+    "driveThrudesc": "Drive-Thru",
+    "driveThru_descriptionplaceholder": "Minimum order 15$ free shipping",    
     "deliverydesc": "Delivery",
     "delivery_descriptionplaceholder": "Minimum order 15$ free shipping",    
     "takeawaydesc": "Takeaway",    

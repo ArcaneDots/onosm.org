@@ -43,17 +43,12 @@ let poiCircle = null;
 let poiRectangle = null;
 
 /**
- * user search event: action
- * @param {Object} submit event object
+ * No
+ * @param {search_terms} address_to_find
  * 
  * Use content of address_to_find input element as search terms
  */
-$("#formFindLocation").submit((e) => {
-  e.preventDefault();
-  hideHtmlAddressNotFoundMsg();
-
-  const address_to_find = $("#address").val();
-  if (address_to_find.length === 0) return;
+function addressLookup(address_to_find){
 
   startHtmlLoadingAnimation();
 
@@ -105,7 +100,7 @@ $("#formFindLocation").submit((e) => {
   .finally(() => {
     stopHtmlLoadingAnimation();
   }); 
-});
+};
 
 /**
  * Save position at the beginning of drag event

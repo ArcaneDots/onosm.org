@@ -1,6 +1,5 @@
 
 function startHtmlLoadingAnimation() {
-    $("#findme h4").text(loadingText);
     $("#findme").addClass("progress-bar progress-bar-striped progress-bar-animated");
 }
 

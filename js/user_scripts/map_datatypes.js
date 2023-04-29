@@ -9,7 +9,7 @@
  * @property {number[]} bounds Array of bounding points [NE, SW]
  * @property {string{}} address Map of OSM address key:values
  * @property {string} class Result type
- * @property {display_name} display_name Array of OSM address vales
+ * @property {search_terms} display_name Array of OSM address vales
  * @property {number} importance decimal value
  * @property {string} lat latitude
  * @property {string} lon longitude
@@ -45,5 +45,5 @@
 
 /**
  * List of string values describing an address
- * @typedef {string[]} display_name i.e. 1313, Mockingbird Lane, Mockingbird Heights
+ * @typedef {string[]} search_terms i.e. 1313, Mockingbird Lane, Mockingbird Heights
  */

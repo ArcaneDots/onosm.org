@@ -4,6 +4,7 @@ const i18n = i18next;
 
 let completedAddress = undefined;
 
+const findLocationForm = document.getElementById('formFindLocation');
 const userAddressForm = document.getElementById('formUserAddress');
 
 /**
@@ -61,6 +62,24 @@ function reloadLists(language) {
     }
   });
 };
+
+findLocationForm.addEventListener('submit', (event) => {
+
+  event.preventDefault();
+
+  const searchTerms = new FormData(findLocationForm).get("search_terms")
+  console.info("data:") 
+  console.info(searchTerms);
+  
+  if (searchTerms == null || searchTerms.length == 0) { 
+    console.warn("missing search terms")
+    return; 
+  }
+
+  hideHtmlAddressNotFoundMsg();
+
+  addressLookup(searchTerms); 
+});
 
 function verifyLocation(){
   if (activeSearchAddress === null) {

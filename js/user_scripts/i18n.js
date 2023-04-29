@@ -1,6 +1,4 @@
 let successString;
-let manualPosition;
-let loadingText;
 let modalText;
 
 const availableLanguages = {
@@ -27,11 +25,7 @@ const rerender = () => {
     // these translations won't get re-copied to their current controls 
     successString = i18n.t('messages.success', {
         escapeInterpolation: false
-    });
-    manualPosition = i18n.t('messages.manualPosition', {
-        escapeInterpolation: false
-    });
-    loadingText = i18n.t('messages.loadingText');
+    });   
     modalText = {};
     modalText.text = i18n.t('messages.modalTitle');
     modalText.button = i18n.t('messages.modalButton');
