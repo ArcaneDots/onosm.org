@@ -7,8 +7,7 @@ function stopHtmlLoadingAnimation(){
     $("#findme").removeClass("progress-bar progress-bar-striped progress-bar-animated");
 }
 
-function showHtmlMapInfo() {
-    $("#map-information").html(manualPosition);
+function showHtmlMapInfo() {    
     $("#map-information").show();
 }
 

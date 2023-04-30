@@ -16,31 +16,27 @@ function nominatimSearchAddress(address_to_find) {
 
   // handle request - should include a timeout 
   return new Promise((resolve, reject) => {
-    $.ajax({
-      'url': addressSearchUrl,
-      'success': function (data) {
+    axios.get(addressSearchUrl)
+      .then(function (response) {
+
         // geocode error - sends error message for ocean coordinates
-        const dataError = data.error;
-        if (dataError !== undefined) {
-          return reject(data);
+        if (response.error !== undefined) {
+          return reject(response.error);
         }
 
         // address search lookup results array of top matches
-        if (!Array.isArray(data) ||
-          (data.length < 1) ||
-          (data[0] === undefined)) {
+        if (!Array.isArray(response.data) ||
+          (response.data.length < 1) ||
+          (response.data[0] === undefined)) {
           return reject({});
         }
 
         // found the address
-        resolve(data[0]);
-      },
-      'error': function (error) {
+        resolve(response.data[0]);
+      })
+      .catch(function (error) {
         reject(error);
-      },
-      'dataType': 'jsonp',
-      'jsonp': 'json_callback'
-    });
+      })
   });
 }
 
@@ -65,27 +61,22 @@ function nominatimReverseLookup(position) {
 
 
   return new Promise((resolve, reject) => {
-    $.ajax({
-      'url': reverseSearchUrl,
-      'success': function (data) {
+    axios.get(reverseSearchUrl)
+      .then((response) => {
         // geocode error - sends error message for ocean coordinates
-        const dataError = data.error;
-        if (dataError !== undefined) {
-          return reject(data);
+        if (response.error !== undefined) {
+          return reject(response.error);
         }
 
         // reverse lookup should return one address
-        if (data == null) {
+        if (response.data == null) {
           return reject({});
         }
-        resolve(data);
-      },
-      'error': function (error) {
-        reject(error);
-      },
-      'dataType': 'jsonp',
-      'jsonp': 'json_callback'
-    });
+        resolve(response.data);
+      })
+      .catch((error) =>
+        reject(error)
+      )
   });
 }
 
@@ -130,6 +121,12 @@ function parseNominatimData(validDataObject) {
   return validDataObject;
 }
 
+/** 
+ * @param {universalCoordinates} position 
+ */
+function displayPosition(position){
+  return `@ lat:${position.lat} lon:${position.lon}`;
+}
 
 /**
  * Convert [lat, lon|lng] to [lat, (Nominatim)lon, (Leaflet)lng]

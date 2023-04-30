@@ -167,14 +167,14 @@ poiMarker.on('dragend', (dragged_event) => {
       const nearByAddress = parseNominatimData(result);
       
       if (!nearByAddress.bounds.contains(finalMarkerPositionLatLng)) {
-        console.info(`User location is outside Nominatim bounding box: ${dragEndLocation}`);
+        console.info(`User location is outside Nominatim bounding box: ${displayPosition(dragEndLocation)}`);
 
         if (poiRectangle.getBounds().contains(nearByAddress.centerPoint)) {
           finalMarkerPositionLatLng = nearByAddress.centerPoint
         }
 
         else {
-          console.info(`Nominatim point is outside original bounding box: ${nearByAddress.centerPoint}`);
+          console.info(`Nominatim point is outside original bounding box: ${displayPosition(nearByAddress.centerPoint)}`);
           finalMarkerPositionLatLng = undefined;
         }
       }
