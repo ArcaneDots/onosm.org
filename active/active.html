@@ -102,7 +102,8 @@ var hash = new L.Hash(map);
 		map.addLayer(geojson);
 	}
 
-var httpurl="https://api.openstreetmap.org/api/0.6/notes/search.json?q=su.openstreetmap.it&closed=0&limit=100";
+	var httpurl="https://api.openstreetmap.org/api/0.6/notes/search.json?q=onosm.org";
+//var httpurl="https://api.openstreetmap.org/api/0.6/notes/search.json?q=onosm.org&closed=0&limit=100";
 microAjax(httpurl,function (res) { 
 var feat=JSON.parse(res);
 loadLayer(feat);
