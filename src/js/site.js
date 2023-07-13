@@ -1,73 +1,80 @@
+import L from "leaflet"
+// jquery is required for bootstrap
+import $ from 'jquery'
+
+// bootstrap
+import 'bootstrap'
 
 //jquery version exposes i18next object for translations
-var i18n = i18next;
 
-var successString, manualPosition, loadingText, modalText;
+//const i18n = i18next;
+
+let successString, manualPosition, loadingText, modalText;
 
 let activeSearchAddress = null;
 let activeMarkerLatLng = null;
 
 const circleRadiusMeters = 50;
 
-function reloadLists(language) {
-
-  $.getJSON('./locales/' + language + '/categories.json')
-    .success(function (data) {
-      category_data = data;
-    })
-    .fail(function () {
-      // 404? Fall back to en-US
-      $.getJSON('./locales/en-US/categories.json')
-      .success(function (data) {
-        category_data = data;
-      });
-    });
-
-  $.getJSON('./locales/' + language + '/payment.json').success(function (data) {
-    payment_data = data;
-  });
-
-  $('#category').children().remove().end();
-  $("#category").select2({
-    query: function (query) {
-      var data = {
-        results: []
-      },
-        i;
-      for (i = 0; i < category_data.length; i++) {
-        if (query.term.length === 0 || category_data[i].toLowerCase().indexOf(query.term.toLowerCase()) >= 0) {
-          data.results.push({
-            id: category_data[i],
-            text: category_data[i]
-          });
-        }
-      }
-      query.callback(data);
-    }
-  });
-
-  $('#payment').children().remove().end();
-  $("#payment").select2({
-    multiple: true,
-    query: function (query) {
-      var data = {
-        results: []
-      };
-      data.results = payment_data;
-      query.callback(data);
-    }
-  });
-}
+//function reloadLists(language) {
+//
+//  $.getJSON('./locales/' + language + '/categories.json')
+//    .success(function (data) {
+//      category_data = data;
+//    })
+//    .fail(function () {
+//      // 404? Fall back to en-US
+//      $.getJSON('./locales/en-US/categories.json')
+//      .success(function (data) {
+//        category_data = data;
+//      });
+//    });
+//
+//  $.getJSON('./locales/' + language + '/payment.json').success(function (data) {
+//    payment_data = data;
+//  });
+//
+//  $('#category').children().remove().end();
+//  $("#category").select2({
+//    query: function (query) {
+//      var data = {
+//        results: []
+//      },
+//        i;
+//      for (i = 0; i < category_data.length; i++) {
+//        if (query.term.length === 0 || category_data[i].toLowerCase().indexOf(query.term.toLowerCase()) >= 0) {
+//          data.results.push({
+//            id: category_data[i],
+//            text: category_data[i]
+//          });
+//        }
+//      }
+//      query.callback(data);
+//    }
+//  });
+//
+//  $('#payment').children().remove().end();
+//  $("#payment").select2({
+//    multiple: true,
+//    query: function (query) {
+//      var data = {
+//        results: []
+//      };
+//      data.results = payment_data;
+//      query.callback(data);
+//    }
+//  });
+//}
 
 /* HERE BE DRAGONS */
-const findme_map = L.map('findme-map')
+const findPoiMap = L.map('findme-map')
   .setView([41.69, 12.71], 5),
   osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   osm = L.tileLayer(osmUrl, {
     minZoom: 2,
     maxZoom: 18,
     attribution: "Data &copy; OpenStreetMap contributors"
-  }).addTo(findme_map),
+  }).addTo(findPoiMap),
   esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
   });
@@ -77,24 +84,24 @@ const baseMaps = {
   "Esri WorldImagery": esri
 };
 
-L.control.layers(baseMaps).addTo(findme_map);
+L.control.layers(baseMaps).addTo(findPoiMap);
 
-var category_data = [];
-var payment_data = [];
+let category_data = [];
+let payment_data = [];
 
-const findme_marker = L.marker([41.69, 12.71], {
+const findPoiMarker = L.marker([41.69, 12.71], {
   draggable: true
-}).addTo(findme_map);
-activeMarkerLatLng = findme_marker.getLatLng();
+}).addTo(findPoiMap);
+activeMarkerLatLng = findPoiMarker.getLatLng();
 
-findme_marker.setOpacity(0);
+findPoiMarker.setOpacity(0);
 
 L.control.locate({
   follow: true
-}).addTo(findme_map);
+}).addTo(findPoiMap);
 
-let findme_circle = null;
-let findme_boundingBox = null;
+let findPoiCircle = null;
+let findPoiBoundingBox = null;
 
 // Bounding box around map
 let circleBoundsVisible = true;
@@ -112,7 +119,7 @@ $("#find").submit(function (e) {
   $("#couldnt-find").hide();
 
   // show loading indicator if user input is not empty
-  var address_to_find = $("#address").val();
+  let address_to_find = $("#address").val();
   if (address_to_find.length === 0) return;
 
   $("#findme h4").text(loadingText);
@@ -132,50 +139,50 @@ $("#find").submit(function (e) {
     [+chosen_place[0], +chosen_place[2]],
     [+chosen_place[1], +chosen_place[3]]);
 
-    mapLatLng = ([
+    const mapLatLng = ([
       (activeSearchAddress.lat),
       (activeSearchAddress.lon)
     ]);
     
     // Show marker at returned address
-    findme_marker.setOpacity(1);
-    findme_marker.setLatLng(mapLatLng);
+    findPoiMarker.setOpacity(1);
+    findPoiMarker.setLatLng(mapLatLng);
 
     // start saving previous marker location
-    activeMarkerLatLng = findme_marker.getLatLng();
+    activeMarkerLatLng = findPoiMarker.getLatLng();
          
     // delete previously created geo-fencing regions
-    if (findme_boundingBox != null) {
-      findme_boundingBox.remove();
-      findme_boundingBox = null;
+    if (findPoiBoundingBox != null) {
+      findPoiBoundingBox.remove();
+      findPoiBoundingBox = null;
     } 
-    else if (findme_circle != null) {
-      findme_circle.remove();
-      findme_circle = null;
+    else if (findPoiCircle != null) {
+      findPoiCircle.remove();
+      findPoiCircle = null;
     }
 
     // adjusted circle center to match search results
-    findme_circle = new L.circle(activeMarkerLatLng)
-    .addTo(findme_map)
+    findPoiCircle = new L.Circle(activeMarkerLatLng)
+    .addTo(findPoiMap)
     .setRadius(circleRadiusMeters)
     .setStyle({ opacity: 0 });
 
     // compare default circle to returned bounding box
-    circleBoundsVisible =  !bounds.contains(findme_circle.getBounds());
+    circleBoundsVisible =  !bounds.contains(findPoiCircle.getBounds());
     
     if (circleBoundsVisible) {
       // show circle bounding box on map
-      findme_circle.setStyle({ opacity: 1 });
+      findPoiCircle.setStyle({ opacity: 1 });
       
     } else {      
       // add initial bounding box to map
-      findme_boundingBox = new L.rectangle(bounds)
-        .addTo(findme_map);
+      findPoiBoundingBox = new L.Rectangle(bounds)
+        .addTo(findPoiMap);
     }
     
     // recenter map on found address
     //findme_map.setView(mapLatLng);
-    findme_map.fitBounds(bounds);        
+    findPoiMap.fitBounds(bounds);        
   })
   .catch(e => {
     $("#couldnt-find").show();
@@ -194,7 +201,7 @@ $("#find").submit(function (e) {
  * Geo-fence marker to the bounded region (Marker "drag" event)
  * @param {Object} drag_event
  */
-findme_marker.on('drag', function(drag_event) {
+findPoiMarker.on('drag', function(drag_event) {
 
   const dragMarkerLocation = drag_event.latlng
   let isInsideRegion = false 
@@ -203,7 +210,7 @@ findme_marker.on('drag', function(drag_event) {
  
   if (!circleBoundsVisible) {
     // check if marker is inside the bounding box     
-    isInsideRegion = findme_boundingBox._bounds.contains(dragMarkerLocation);
+    isInsideRegion = findPoiBoundingBox._bounds.contains(dragMarkerLocation);
   } else {
     // check if marker is inside the circle 
     isInsideRegion = isInsideCircle(dragMarkerLocation);
@@ -211,7 +218,7 @@ findme_marker.on('drag', function(drag_event) {
 
   // reset marker to previous position when dragged outside the active bounding box
   if (!isInsideRegion){
-    findme_marker.setLatLng(activeMarkerLatLng);
+    findPoiMarker.setLatLng(activeMarkerLatLng);
   } 
 });
 
@@ -219,7 +226,7 @@ findme_marker.on('drag', function(drag_event) {
  * Validate new marker location (Marker "drag ended" event)
  * @param {Object} dragged_event
  */
-findme_marker.on('dragend', function (dragged_event) {
+findPoiMarker.on('dragend', function (dragged_event) {
 
   // update marker position after drag event 
   const eventMarkerLocation = dragged_event.target._latlng;
@@ -245,14 +252,14 @@ findme_marker.on('dragend', function (dragged_event) {
   if (circleBoundsVisible) {
     // Use raw marker position when the circle region is active (skip lookup)
     
-    if (!findme_circle) {
+    if (!findPoiCircle) {
       // prevent null reference to circle region
       console.error("unable to check bounds due to missing circle region")      
     }
     else if (isInsideCircle(eventMarkerLocation)) {
       // save new valid marker position
-      findme_marker.setLatLng(userEventCoordinates);
-      activeMarkerLatLng = findme_marker.getLatLng();
+      findPoiMarker.setLatLng(userEventCoordinates);
+      activeMarkerLatLng = findPoiMarker.getLatLng();
     }
 
     return;
@@ -282,7 +289,7 @@ findme_marker.on('dragend', function (dragged_event) {
       // user location is outside nominatim's bounding box (in a lake or some other bad business location)
       if (!nominatimBounds._bounds.contains(eventMarkerLocation)) {
 
-        if (findme_boundingBox._bounds.contains(nominatimNearbyPosition)) {
+        if (findPoiBoundingBox._bounds.contains(nominatimNearbyPosition)) {
           // use the Nominatim supplied point since the user one is outside the Nominatim bounding box
           finalMarkerPositionLatLng = Object.assign({}, nominatimNearbyPosition);
 
@@ -320,11 +327,11 @@ findme_marker.on('dragend', function (dragged_event) {
       $("#findme").removeClass("progress-bar progress-bar-striped progress-bar-animated");
 
       // place marker to initial position
-      findme_marker.setLatLng(finalMarkerPositionLatLng);
-      activeMarkerLatLng = findme_marker.getLatLng();
+      findPoiMarker.setLatLng(finalMarkerPositionLatLng);
+      activeMarkerLatLng = findPoiMarker.getLatLng();
 
       // recenter map on original search location to deter map drifting too much
-      findme_map.panTo(activeMarkerLatLng);
+      findPoiMap.panTo(activeMarkerLatLng);
     });
 });
 
@@ -336,13 +343,13 @@ findme_marker.on('dragend', function (dragged_event) {
  */
 function isInsideCircle(LatLngPoint) {
   
-  if (!findme_circle) {return false}
+  if (!findPoiCircle) {return false}
 
   // distance between the current position of the marker and the center of the circle
-  const markerDistance = findme_map.distance(LatLngPoint, findme_circle.getLatLng());
+  const markerDistance = findPoiMap.distance(LatLngPoint, findPoiCircle.getLatLng());
 
   // the marker is inside the circle when the distance is inferior to the radius
-  return markerDistance < findme_circle.getRadius();
+  return markerDistance < findPoiCircle.getRadius();
 }
 
 /**
@@ -384,7 +391,7 @@ function searchAddress(address_to_find) {
       namedetails: 1
   };
 
-  var addressSearchUrl = "https://nominatim.openstreetmap.org/search?" + $.param(qwArgNominatim);
+  let addressSearchUrl = "https://nominatim.openstreetmap.org/search?" + $.param(qwArgNominatim);
 
   // handle request - should include a timeout 
   return new Promise((resolve, reject) => {
@@ -437,7 +444,7 @@ function searchReverseLookup(position) {
       namedetails: 1
   };
 
-  var reverseSearchUrl = "https://nominatim.openstreetmap.org/reverse?" + $.param(qwArgNominatim);
+  let reverseSearchUrl = "https://nominatim.openstreetmap.org/reverse?" + $.param(qwArgNominatim);
 
 
   return new Promise((resolve, reject) => {
@@ -507,7 +514,7 @@ function parseData(nominatimData) {
     return getLatLng(nominatimAddress);
   };
 
-  // copy bounding box coordinates
+  // copy bounding box coordinates from Nominatim array
   nominatimAddress.boundingBox = [
     Number(nominatimObject.boundingbox[0]),
     Number(nominatimObject.boundingbox[1]),
@@ -539,13 +546,13 @@ function getLatLng(locationLatLng) {
 // Step change
 
 $(window).on('hashchange', function () {
-  if (location.hash == '#details') {
+  if (location.hash === '#details') {
     $('#collect-data-step').removeClass('d-none');
     $('#address-step').addClass('d-none');
     $('#confirm-step').addClass('d-none');
     $('#step2').addClass('active bg-success');
     $('#step3').removeClass('active bg-success');
-  } else if (location.hash == '#done') {
+  } else if (location.hash === '#done') {
     $('#confirm-step').removeClass('d-none');
     $('#collect-data-step').addClass('d-none');
     $('#address-step').addClass('d-none');
@@ -558,7 +565,7 @@ $(window).on('hashchange', function () {
     $('#step2').removeClass('active bg-success');
     $('#step3').removeClass('active bg-success');
   }
-  findme_map.invalidateSize();
+  findPoiMap.invalidateSize();
 });
 
 // Disables the input if delivery is not checked
@@ -570,7 +577,7 @@ function disableDelivery() { $("#delivery").attr("disabled", true); $("#delivery
 function enableDelivery() { $("#delivery").removeAttr("disabled"); $("#delivery_description").removeAttr("disabled"); $("#label-delivery-check").html(i18n.t('step2.yes')); }
 
 function getNoteBody() {
-  var paymentIds = [],
+  let paymentIds = [],
     paymentTexts = [];
   $.each($("#payment").select2("data"), function (_, e) {
     paymentIds.push(e.id);
@@ -580,7 +587,7 @@ function getNoteBody() {
 
   // add back translation of note header
   
-  var note_body = "onosm.org submitted note from a business:\n";
+  let note_body = "onosm.org submitted note from a business:\n";
   if ($("#name").val()) note_body += i18n.t('step2.name') + ": " + $("#name").val() + "\n";
   if ($("#hnumberalt").val()) note_body += "addr:housenumber=" + $("#hnumberalt").val() + "\n";
   if ($("#addressalt").val()) note_body += "addr:street=" + $("#addressalt").val() + "\n";
@@ -614,18 +621,18 @@ $("#collect-data-done").click(function () {
 
   location.hash = '#done';
 
-  var latlon = findme_marker.getLatLng(),
-    qwarg = {
-      lat: latlon.lat,
-      lon: latlon.lng,
+  let markerLatLon = findPoiMarker.getLatLng(),
+    qwArg = {
+      lat: markerLatLon.lat,
+      lon: markerLatLon.lng,
       text: getNoteBody()
     };
 
-  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwarg, function (data) {
+  $.post('https://api.openstreetmap.org/api/0.6/notes.json', qwArg, function (data) {
     // console.log(data);
-    var noteId = data.properties.id;
-    var link = 'https://openstreetmap.org/?note=' + noteId + '#map=19/' + latlon.lat + '/' + latlon.lng + '&layers=N';
-    $("#linkcoords").append('<div class="mt-3 h4"><a href="' + link + '">' + link + '</a></div>');
+    const noteId = data.properties.id;
+      const link = 'https://openstreetmap.org/?note=' + noteId + '#map=19/' + markerLatLon.lat + '/' + markerLatLon.lng + '&layers=N';
+      $("#linkcoords").append('<div class="mt-3 h4"><a href="' + link + '">' + link + '</a></div>');
   });
 });
 
