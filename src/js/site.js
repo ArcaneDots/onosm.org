@@ -16,55 +16,55 @@ let activeMarkerLatLng = null;
 
 const circleRadiusMeters = 50;
 
-//function reloadLists(language) {
-//
-//  $.getJSON('./locales/' + language + '/categories.json')
-//    .success(function (data) {
-//      category_data = data;
-//    })
-//    .fail(function () {
-//      // 404? Fall back to en-US
-//      $.getJSON('./locales/en-US/categories.json')
-//      .success(function (data) {
-//        category_data = data;
-//      });
-//    });
-//
-//  $.getJSON('./locales/' + language + '/payment.json').success(function (data) {
-//    payment_data = data;
-//  });
-//
-//  $('#category').children().remove().end();
-//  $("#category").select2({
-//    query: function (query) {
-//      var data = {
-//        results: []
-//      },
-//        i;
-//      for (i = 0; i < category_data.length; i++) {
-//        if (query.term.length === 0 || category_data[i].toLowerCase().indexOf(query.term.toLowerCase()) >= 0) {
-//          data.results.push({
-//            id: category_data[i],
-//            text: category_data[i]
-//          });
-//        }
-//      }
-//      query.callback(data);
-//    }
-//  });
-//
-//  $('#payment').children().remove().end();
-//  $("#payment").select2({
-//    multiple: true,
-//    query: function (query) {
-//      var data = {
-//        results: []
-//      };
-//      data.results = payment_data;
-//      query.callback(data);
-//    }
-//  });
-//}
+function reloadLists(language) {
+
+ $.getJSON('./locales/' + language + '/categories.json')
+   .success(function (data) {
+     category_data = data;
+   })
+   .fail(function () {
+     // 404? Fall back to en-US
+     $.getJSON('./locales/en-US/categories.json')
+     .success(function (data) {
+       category_data = data;
+     });
+   });
+
+ $.getJSON('./locales/' + language + '/payment.json').success(function (data) {
+   payment_data = data;
+ });
+
+ $('#category').children().remove().end();
+ $("#category").select2({
+   query: function (query) {
+     var data = {
+       results: []
+     },
+       i;
+     for (i = 0; i < category_data.length; i++) {
+       if (query.term.length === 0 || category_data[i].toLowerCase().indexOf(query.term.toLowerCase()) >= 0) {
+         data.results.push({
+           id: category_data[i],
+           text: category_data[i]
+         });
+       }
+     }
+     query.callback(data);
+   }
+ });
+
+ $('#payment').children().remove().end();
+ $("#payment").select2({
+   multiple: true,
+   query: function (query) {
+     var data = {
+       results: []
+     };
+     data.results = payment_data;
+     query.callback(data);
+   }
+ });
+}
 
 /* HERE BE DRAGONS */
 const findPoiMap = L.map('findme-map')

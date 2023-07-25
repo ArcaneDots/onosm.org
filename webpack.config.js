@@ -11,19 +11,45 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.css$/,
+                test: /\.(scss)$/,
                 use: [
-                    'style-loader',
-                    'css-loader',
-                ],
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader'
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: () => [
+                                    require('autoprefixer')
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        loader: 'sass-loader'
+                    }
+                ]
             },
             // {
-            //     test: /\.(jpg|jpeg|gif|png|ico)$/,
-            //     exclude: /node_modules/,
-            //     loader:'file-loader?name=img/[path][name].[ext]&context=./app/img'
-            //  }               
+            //     test: /\.png$/,
+            //     use: [
+            //         'file-loader'
+            //     ]
+            // },
             {
-                test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3|ico)$/,
+                mimetype: 'image/svg+xml',
+                scheme: 'data',
+                type: 'asset/resource',
+                generator: {
+                    filename: 'icons/[hash].svg'
+                }
+            },
+            {
+                test: /\.(css|jpe?g|gif|svg|woff|ttf|wav|mp3|ico|png)$/,
                 type: "asset/resource",
                 generator: {
                     filename: '[path][name][ext]'
@@ -35,7 +61,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         })
-    ],    
+    ],
     output: {
         path: `${outDir}`,
         filename: 'bundle.js',
