@@ -11,7 +11,7 @@ a {
     height:400px;
 }
 
-#findme-map {
+#map-form {
     height:300px;
 }
 
@@ -28,7 +28,7 @@ a.load {
     text-decoration:none;
 }
 
-a.l {
+nav.a {
     padding:2px;
     text-decoration:underline;
     font-size:13px;
@@ -39,9 +39,9 @@ a.l {
     font-weight:bold;
 }
 
-button {
+/* button {
     font:inherit;
-}
+} */
 
 .done {
     background:#9ed485;
@@ -49,17 +49,17 @@ button {
     font-weight:bold;
 }
 
-.on-1 .step-1,
+/* .on-1 .step-1,
 .on-2 .step-2,
 .on-3 .step-3 {
     background:#eee;
-}
+} */
 
 .steps {
     border:1px solid #ccc;
 }
 
-.steps div {
+/* .steps div {
     -webkit-transition:all 500ms ease-in;
     transition:all 500ms ease-in;
 }
@@ -72,7 +72,7 @@ button {
     font-weight:bold;
     text-decoration:none;
     color:#000 !important;
-}
+} */
 
 .mr {
     margin-right:10px;

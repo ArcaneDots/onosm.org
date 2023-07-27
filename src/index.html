@@ -12,6 +12,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
 
+  <link rel="stylesheet" href="../src/css/twemoji.css">
+
   <!-- KEEP LAST -->
   <link rel='stylesheet' type='text/css' href="./src/css/site.css" />
 </head>
@@ -19,6 +21,7 @@
 <body>
   <header>
     <div class='container-sm mt-3 mb-5' style='display: inline-block'>
+      <label for="languageSwitcher">Select Language</label>
       <select name='language' id='languageSwitcher'></select>
     </div>
 
@@ -35,14 +38,13 @@
     </div>
   </header>
 
-  <nav class="nav nav-pills nav-fill border p-1 rounded">
-    <a class="nav-item nav-link active rounded-0 bg-success" id="step1" href="#location"
-      data-i18n="step1.title">Location</a>
-    <a class="nav-item nav-link rounded-0 disabled" id="step2" href="#details" data-i18n="step2.title">Details</a>
-    <strong class="nav-item nav-link disabled rounded-0" id="step3" data-i18n="step3.title"></strong>
+  <nav class="nav nav-pills nav-fill w-100">
+    <a class="nav-link active" aria-current="page" id="step1" href="#location" data-i18n="step1.title">Location</a>
+    <a class="nav-link" id="step2" href="#details" data-i18n="step2.title">Details</a>
+    <a class="nav-link disabled" id="step3" href="#done" data-i18n="step3.title">Done</a>
   </nav>
 
-  <main class="container-sm mt-3 mb-5">
+  <main class="container-sm">
     <div class='mt-3' id='address-step'>
       <div class='center pad2'>
         <span id='instructions' class="text-info" for="address" style="font-size: x-large;"
@@ -50,17 +52,21 @@
       </div>
       <div class='mb-4 mt-3'>
         <form id='find' class="input-group  border border-primary shadow-sm rounded">
-          <input class="form-control" id="address" type="search" placeholder='' data-i18n="[placeholder]step1.addr" />
+          <label for="business-address">Search by address keywords</label>
           <div class="input-group-append">
-            <button class="cbtn btn-primary px-3" id='findme' aria-label="search for address"><span
-                data-i18n="step1.button"></span></button>
+            <input id="business-address" class="form-control" type="text" name="address-keywords"
+              data-i18n="[placeholder]step1.addr"/>
+            <button id="find-me" class="btn btn-primary px-3">Search address
+              <span data-i18n="step1.button">
+              </span>
+            </button>
           </div>
         </form>
-        <p id="couldnt-find" class="alert alert-danger mt-2" role="alert" style='display: none;'
+        <p data-warning="not-find" class="alert alert-danger mt-2" role="alert" style='display: none;'
           data-i18n="[html]step1.fail"></p>
-        <p id="map-information" class="alert alert-warning mt-2" role="alert" style='display: none;'></p>
+        <p data-warning="map-information" class="alert alert-warning mt-2" role="alert" style='display: none;'></p>
       </div>
-      <div id='findme-map'></div>
+      <div id='map'></div>
       <a class="btn btn-primary btn-lg text-white w-100 mt-3 text-uppercase disabled" id="continue" href="#details"
         data-i18n="step1.continue">
         Move to next step
@@ -70,20 +76,22 @@
     <!-- step 2 -->
     <div class='mt-3 d-none' id='collect-data-step'>
       <p data-i18n="[html]step2.desc" class="h3 text-info"></p>
-      <form id="form">
+      <form data-form="business-tags">
         <!-- categories -->
         <div class="row">
           <div class="form-group col">
-            <label for="category" data-i18n="step2.catlabel"></label>
-            <input id="category" data-i18n="[data-placeholder]step2.catplaceholder" class="w-100" />
+            <label for="category" data-i18n="step2.catlabel">Category</label>
+            <input id="category" class="w-100" data-i18n="[data-placeholder]step2.catplaceholder" />
           </div>
           <div class="form-group col-sm-7">
-            <label for='categoryalt' data-i18n="step2.catalt"></label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-convenience-store"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-convenience-store"></i>
+                  <label for='categoryalt' data-i18n="step2.catalt">Alternate Category</label>
+                </span>
               </div>
-              <input id='categoryalt' type='text' placeholder='' class="form-control"
+              <input id='categoryalt' type='text' class="form-control"
                 data-i18n="[placeholder]step2.cataltplaceholder" />
             </div>
           </diV>
@@ -91,71 +99,86 @@
 
         <hr>
         <p data-i18n="step2.addressalt" class="mt-3"></p>
+        <!-- id's based on https://www.w3.org/TR/WCAG21/#input-purposes -->
         <!-- address 1 -->
         <div class="form-row">
-          <div class="form-group col-md-5">
-            <label for='addressalt' data-i18n="step2.street"></label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-round-pushpin"></i></span>
-              </div>
-              <input id='addressalt' autocomplete="street-address" type='text' placeholder='' class="form-control"
-                data-i18n="[placeholder]step2.addressaltplaceholder" />
-            </div>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="hnumberalt" data-i18n="step2.housenumber"></label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-keycap-10"></i></span>
-              </div>
-              <input type="text" class="form-control" id="hnumberalt"
-                data-i18n="[placeholder]step2.housenumberplaceholder">
-            </div>
-          </div>
 
-          <div class="form-group col-md-3">
-            <label for="city" data-i18n="step2.city"></label>
+          <div class="form-group col-md-2">
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-cityscape"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-keycap-10"></i>
+                  <label for="user-building" data-i18n="step2.housenumber">Building</label>
+                </span>
               </div>
-              <input type="text" class="form-control" id="city" data-i18n="[placeholder]step2.cityplaceholder">
+              <input id="user-building" class="form-control" name="building" type='text'
+                data-i18n="[placeholder]step2.housenumberplaceholder" aria-autocomplete="address-line1">
+            </div>
+          </div>
+          <div class="form-group col-md-5">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="twa twa-round-pushpin"></i>
+                  <label for='user-street' data-i18n="step2.street">Street</label>
+                </span>
+              </div>
+              <input id='user-street' class="form-control" name="street" type='text'
+                data-i18n="[placeholder]step2.addressaltplaceholder" autocomplete="address-line2" />
+            </div>
+          </div>
+          <div class="form-group col-md-3">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="twa twa-cityscape"></i>
+                  <label for="user-city" data-i18n="step2.city">Village/Town/City</label>
+                </span>
+              </div>
+              <input id="user-city" class="form-control" name="city" type="text"
+                data-i18n="[placeholder]step2.cityplaceholder">
             </div>
           </div>
           <div class="form-group col-md-2">
-            <label for="postcode" data-i18n="step2.postcode"></label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-postbox"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-postbox"></i>
+                  <label for="user-postcode" data-i18n="step2.postcode">Postal Code</label>
+                </span>
               </div>
-              <input type="number" class="form-control" id="postcode"
+              <input id="user-postcode" class="form-control" name="postcode" type="text"
                 data-i18n="[placeholder]step2.postcodeplaceholder">
             </div>
           </div>
         </div>
 
         <hr>
+
         <!-- name and number -->
         <div class="row mt-3">
           <div class="form-group col">
 
-            <label for='name' data-i18n="step2.name"></label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-name-badge"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-name-badge"></i>
+                  <label for='business-name' data-i18n="step2.name">Business Name</label>
+                </span>
               </div>
-              <input id='name' type='text' placeholder='' class="form-control"
+              <input id='business-name' name="name" type='text' class="form-control"
                 data-i18n="[placeholder]step2.nameplaceholder" />
             </div>
           </div>
           <div class="form-group col-sm-6">
-            <label for='phone' data-i18n="step2.phone"></label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-telephone-receiver"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-telephone-receiver"></i>
+                  <label for='business-phone' data-i18n="step2.phone">Phone</label>
+                </span>
               </div>
-              <input id='phone' type="tel" placeholder='' class="form-control"
+              <input id='business-phone' type="tel" autocomplete="tel" class="form-control"
                 data-i18n="[placeholder]step2.phoneplaceholder" />
             </div>
           </div>
@@ -164,22 +187,26 @@
         <!-- website & social -->
         <div class="row">
           <div class="form-group col">
-            <label for='website' data-i18n="step2.website"></label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-globe-with-meridians"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-globe-with-meridians"></i>
+                  <label for='business-website' data-i18n="step2.website">Website URL</label>
+                </span>
               </div>
-              <input id='website' type="url" placeholder='' class="form-control"
+              <input id='business-website' type="url" placeholder='' class="form-control"
                 data-i18n="[placeholder]step2.websiteplaceholder" />
             </div>
           </div>
           <div class="form-group col-sm-6">
-            <label for='social' data-i18n="step2.social"></label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="twa twa-speech-balloon"></i></span>
+                <span class="input-group-text">
+                  <i class="twa twa-speech-balloon"></i>
+                  <label for='business-social' data-i18n="step2.social">Social media</label>
+                </span>
               </div>
-              <input id='social' type='text' placeholder='' class="form-control"
+              <input id='business-social' class="form-control" type='text'
                 data-i18n="[placeholder]step2.socialplaceholder" />
             </div>
           </div>
@@ -187,63 +214,73 @@
 
         <!-- opening hours -->
         <div class="form-group">
-          <label for='opening_hours' data-i18n="step2.opening"></label>
           <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text"><i class="twa twa-nine-o-clock"></i></span>
+              <span class="input-group-text">
+                <i class="twa twa-nine-o-clock"></i>
+                <label for='business-opening_hours' data-i18n="step2.opening">Opening hours</label>
+              </span>
             </div>
-            <input id='opening_hours' type='text' placeholder='' class="form-control"
+            <input id='business-opening_hours' class="form-control" type='text' 
               data-i18n="[placeholder]step2.openingplaceholder" />
           </div>
         </div>
 
         <!-- accessibility -->
-        <label for='wheel' data-i18n="step2.wheel" class="mt-3"></label>
-        <i class="twa twa-information" title="" data-i18n="[title]step2.imgalt" data-toggle="modal"
-          data-target="#wheelmodal" style="cursor:pointer"></i>
         <div class="input-group">
           <div class="input-group-prepend">
-            <span class="input-group-text"><i class="twa twa-wheelchair-symbol"></i></span>
+            <span class="input-group-text">
+              <i class="twa twa-wheelchair-symbol" data-bs-toggle="modal" data-bs-target="#wheelmodal"
+                style="cursor:pointer"></i>
+              <label for='wheelchair-access-select' data-i18n="step2.wheel" class="mt-3">Wheelchair
+                accessibility</label>
+            </span>
           </div>
-          <select class="custom-select" id="wheel">
-            <option selected data-i18n="step2.wheelplaceholder" hidden="yes" value=""></option>
-            <option value="yes" data-i18n="step2.wheel_yes"></option>
-            <option value="limited" data-i18n="step2.wheel_limited"></option>
-            <option value="no" data-i18n="step2.wheel_no"></option>
-            <option value="unknown" data-i18n="step2.wheel_unknown"></option>
+          <select class="custom-select" name="wheelchair-access" id="wheelchair-access-select">
+            <option value="" data-i18n="step2.wheelplaceholder" selected hidden="yes"></option>
+            <option value="yes" data-i18n="step2.wheel_yes">Yes</option>
+            <option value="limited" data-i18n="step2.wheel_limited">Limited</option>
+            <option value="no" data-i18n="step2.wheel_no">No</option>
+            <option value="unknown" data-i18n="step2.wheel_unknown">Unknown</option>
           </select>
         </div>
-        <!-- modal -->
-        <div class="modal fade bd-example-modal-xl" id="wheelmodal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <!-- wheelchair modal -->
+        <div id="wheelmodal" aria-label="Show wheelchair tag reference" class="modal fade"
+          tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
+              <!-- header -->
               <div class="modal-header">
-                <h5 class="modal-title" data-i18n="messages.modalTitle"></h5>
+                <h5 class="modal-title" data-i18n="messages.modalTitle">
+                  Wheelchair accessibility reference</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
+              <!-- body -->
               <div class="modal-body">
-                <p data-i18n="[html]step2.wheelmodal"></p>
+                <p data-i18n="[html]step2.wheelmodal">description</p>
               </div>
+              <!-- footer -->
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary w-100 btn-lg text-uppercase" data-dismiss="modal"
-                  data-i18n="messages.modalButton"></button>
+                <button type="button" class="btn btn-secondary btn-lg w-100 text-uppercase" data-bs-dismiss="modal"
+                  aria-label="Close wheelchair reference pop-up" data-i18n="messages.modalButton"></button>
               </div>
             </div>
           </div>
         </div>
 
         <!-- payments -->
-        <label for='payment' data-i18n="step2.payment" class="mt-3"></label>
-        <input id='payment' placeholder="" class="w-100" data-i18n="[placeholder]step2.paymentplaceholder" />
+        <label for="payment" data-i18n="step2.payment" class="mt-3">Accepted payment types</label>
+        <input id="payment" class="w-100" data-i18n="[placeholder]step2.paymentplaceholder" />
 
         <hr class="my-3">
         <!-- delivery -->
 
         <div class="row">
           <div class="form-group col">
-            <label for='delivery' data-i18n="step2.delivery"></label>
+            <label for='delivery' data-i18n="step2.delivery">Delivery</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <div class="input-group-text">
@@ -255,7 +292,7 @@
                   </div>
                 </div>
               </div>
-              <input id='delivery' type='text' placeholder='' class="form-control"
+              <input id='delivery' type='text' class="form-control"
                 data-i18n="[placeholder]step2.deliveryplaceholder" />
             </div>
           </div>
@@ -360,8 +397,8 @@
           </div>
         </div>
 
-        <button class="btn btn-primary btn-lg w-100 mt-4 text-uppercase" id='collect-data-done'
-          data-i18n="step2.done"></button>
+        <button id='collect-data-done' aria-label="Enter business information"
+          class="btn btn-primary btn-lg w-100 mt-4 text-uppercase" data-i18n="step2.done"></button>
       </form>
     </div>
 
@@ -369,7 +406,8 @@
       <p class="h2 text-success mt-3 mb-4" data-i18n="[html]step3.row1"></p>
       <p><span class="h4" data-i18n="step3.row2"></span> <span id='linkcoords'>&nbsp;</span></p>
       <p class="alert alert-info" role="alert" data-i18n="[html]step3.row3"></p>
-      <p><span data-i18n="step3.row4"></span> <a href="#location" onclick="clearFields()" data-i18n="step3.row4a"></a>!
+      <p><span data-i18n="step3.row4"></span>
+        <a href="#location" aria-label="Create another note" data-i18n="step3.row4a"></a>!
       </p>
 
       <div data-i18n="[html]step3.finalmessage"></div>
