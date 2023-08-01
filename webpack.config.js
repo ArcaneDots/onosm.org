@@ -6,7 +6,7 @@ const outDir = path.resolve(__dirname, './dist');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './src/js/app.js',
+    entry: './src/app.js',
     mode: 'development',
     module: {
         rules: [
@@ -18,6 +18,7 @@ module.exports = {
                     },
                     {
                         loader: 'css-loader'
+
                     },
                     {
                         loader: 'postcss-loader',
@@ -32,7 +33,8 @@ module.exports = {
                     {
                         loader: 'sass-loader'
                     }
-                ]
+                ],
+
             },
             // {
             //     test: /\.png$/,
@@ -49,17 +51,25 @@ module.exports = {
                 }
             },
             {
-                test: /\.(css|jpe?g|gif|svg|woff|ttf|wav|mp3|ico|png)$/,
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+                generator: {
+                    filename: 'css/[name][ext]'
+                }
+            },
+            {
+                test: /\.(jpe?g|gif|svg|woff|ttf|wav|mp3|ico|png)$/,
                 type: "asset/resource",
                 generator: {
-                    filename: '[path][name][ext]'
+                    filename: 'img/[name][ext]'
                 }
             },
 
         ],
     }, plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html'
+            template: 'src/index.html',
+            favicon: `${srcDir}/img/favicon.ico`
         })
     ],
     output: {
