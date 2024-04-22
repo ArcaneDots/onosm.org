@@ -72,9 +72,9 @@
   
     <nav class="container-sm mt-3 mb-5" >
       <div class="nav nav-pills nav-fill border p-1 rounded" dir="auto">
-        <a class="nav-item nav-link active rounded-0 bg-success" id="step1" href="#location" data-i18n="step1.title">Location</a>
-        <a class="nav-item nav-link rounded-0 disabled" id="step2" href="#details" data-i18n="step2.title">Details</a>
-        <strong class="nav-item nav-link disabled rounded-0" id="step3" data-i18n="step3.title"></strong>
+        <a class="nav-item nav-link active rounded-0 bg-success" style="font-size: x-large;" id="step1" href="#location" data-i18n="step1.title">Location</a>
+        <a class="nav-item nav-link rounded-0 disabled"  style="font-size: x-large;" id="step2" href="#details" data-i18n="step2.title">Details</a>
+        <strong class="nav-item nav-link disabled rounded-0"  style="font-size: x-large;" id="step3" data-i18n="step3.title"></strong>
       </div>
     </nav>
   
@@ -90,7 +90,7 @@
           <div class="input-group  border border-primary shadow-sm rounded">
             <input class="form-control" id="address" type="search" placeholder='' data-i18n="[placeholder]step1.addrplaceholder" />
             <div class="input-group-append">
-              <button class="cbtn btn-primary px-3" id='findme' aria-label="search for address"><span
+              <button class="btn btn-outline-primary px-3 " style="font-weight: bolder; font-size: x-large; font-stretch: expanded;"id='findme' aria-label="search for address"><span
                   data-i18n="step1.button"></span></button>
             </div>
           </div>
@@ -99,7 +99,7 @@
         <p id="map-information" class="alert alert-warning mt-2" role="alert" style='display: none;'></p>
       </div>
       <div id='findme-map'></div>
-      <a class="btn btn-primary btn-lg text-white w-100 mt-3 text-uppercase disabled" id="continue" href="#details" data-i18n="step1.continue">
+      <a class="btn btn-primary text-black-50 btn-lg btn-block mt-3 disabled" id="continue" href="#details"><span style="font-stretch: ultra-expanded; font-size: xx-large;" data-i18n="step1.continue">
         Move to next step
       </a>
     </div>
@@ -112,7 +112,7 @@
         <!-- categories -->
         <div class="row">
           <div class="form-group col">
-            <label for="category" data-i18n="step2.catlabel" ></label>
+          <label for="category" data-i18n="step2.catlabel" aria-label="Category"></label>
             <input id="category" data-i18n="[data-placeholder]step2.catplaceholder" class="w-100"  />
           </div>
           <div class="form-group col-sm-7">
@@ -132,7 +132,7 @@
         <div class="form-row">
           <!-- Street -->
           <div id="streetgroup" class="form-group col-md-5">
-            <label for='addressalt' data-i18n="step2.street"></label>
+            <label for="addressalt" data-i18n="step2.street"></label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="twa twa-round-pushpin"></i></span>
@@ -293,7 +293,7 @@
                   </div>
                 </div>
               </div>
-              <input id='delivery' type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.deliveryplaceholder" />
+              <input id="delivery" type='text' placeholder='' class="form-control" data-i18n="[placeholder]step2.deliveryplaceholder" />
             </div>
           </div>
           <div class="form-group col-sm-6">

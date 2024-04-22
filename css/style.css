@@ -142,7 +142,7 @@ sup {
   bottom:1em;
   } */
 
-/* label {
+label {
   display:block;
   }
 select,
@@ -161,7 +161,7 @@ input[type=text] {
   padding:4px 6px;
   -webkit-border-radius:1px;
           border-radius:1px;
-  } */
+  }
 /* .select2-search__field {
   width: 100% !important;
 } */
@@ -185,7 +185,7 @@ input[type=text] {
     border-width:1px;
     }
 
-/* textarea {
+textarea {
   height:200px;
   max-width:none;
   }
@@ -194,7 +194,7 @@ input[type=submit] {
   cursor:pointer;
   color:#fff;
   font-weight:bold;
-  text-transform:uppercase;
+  /* text-transform:uppercase; */
   border:none;
   padding:9px 20px;
   -webkit-box-shadow:2px 2px 4px rgba(0,0,0,0.1);
@@ -208,7 +208,7 @@ input[type=submit] {
     position:relative;
     top:1px;
     }
-
+/*
 table {
   width:100%;
   background-color:transparent;
