@@ -24,6 +24,12 @@ input[type=number] {
   text-align: start;
 }
 
+.badge {
+  font-size: 1.5em;
+  font-weight: bold;
+  font-stretch: ultra-expanded;
+}
+
 /* <<<<<<< HEAD
 h3 {
   font-size:20px;

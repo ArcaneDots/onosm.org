@@ -87,11 +87,10 @@
       <div class="mb-4 mt-3">
         <form id="find">
           <label for="address" data-i18n="step1.addr">look up address</label>
-          <div class="input-group  border border-primary shadow-sm rounded">
-            <input class="form-control" id="address" type="search" placeholder=" data-i18n="[placeholder]step1.addrplaceholder" />
+          <div class="input-group  border border-primary shadow-sm rounded" >
+            <input class="form-control" id="address" type="search" placeholder="" data-i18n="[placeholder]step1.addrplaceholder" />
             <div class="input-group-append">
-              <button class="btn btn-outline-primary px-3 " style="font-weight: bolder; font-size: x-large; font-stretch: expanded;"id="findme" aria-label="search for address"><span
-                  data-i18n="step1.button"></span></button>
+              <button class="btn btn-outline-primary px-3" style="font-weight: bolder; font-size: x-large; font-stretch: expanded;"id="findme" aria-labelledby="search_button_title"><div id="search_button_title" data-i18n="step1.button"> </div></button>
             </div>
           </div>
         </form>
@@ -99,7 +98,7 @@
         <p id="map-information" class="alert alert-warning mt-2" role="alert" style="display: none;"></p>
       </div>
       <div id="findme-map"></div>
-      <a class="btn btn-primary text-black-50 btn-lg btn-block mt-3 disabled" id="continue" href="#details"><span style="font-stretch: ultra-expanded; font-size: xx-large;" data-i18n="step1.continue">
+      <a class="btn btn-primary text-white-50 btn-lg btn-block mt-3 disabled" id="continue" href="#details"><span style="font-size: xx-large;" data-i18n="step1.continue">
         Move to next step
       </a>
     </div>
@@ -132,12 +131,12 @@
         <div class="form-row">
           <!-- Street -->
           <div id="streetgroup" class="form-group col-md-5">
-            <label for="addressalt" data-i18n="step2.street"></label>
+            <label for='addressalt' data-i18n='step2.street'></label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="twa twa-round-pushpin"></i></span>
               </div>
-              <input id="addressalt" autocomplete="street-address" type="text" placeholder=" class="form-control" data-i18n="[placeholder]step2.addressaltplaceholder" />
+              <input id="addressalt" autocomplete="street-address" type="text" placeholder="" class="form-control" data-i18n="[placeholder]step2.addressaltplaceholder" />
             </div>
           </div>
           <!-- House number -->
@@ -293,7 +292,7 @@
                   </div>
                 </div>
               </div>
-              <input id="delivery" type="text" placeholder=" class="form-control" data-i18n="[placeholder]step2.deliveryplaceholder" />
+              <input id="delivery" type='text' class="form-control" data-i18n="[placeholder]step2.deliveryplaceholder" />
             </div>
           </div>
           <div class="form-group col-sm-6">
